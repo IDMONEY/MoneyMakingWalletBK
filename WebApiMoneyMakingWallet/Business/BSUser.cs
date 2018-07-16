@@ -2,7 +2,6 @@
 using IDMONEY.IO.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Nethereum.Hex.HexConvertors.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,7 +9,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Nethereum.Web3.Accounts;
 
 namespace IDMONEY.IO.Business
 {
@@ -28,16 +26,16 @@ namespace IDMONEY.IO.Business
 
                     if(user == null)
                     {
-                        var ecKey = Nethereum.Signer.EthECKey.GenerateKey();
-                        var privateKey = ecKey.GetPrivateKeyAsBytes().ToHex();
-                        var account = new Nethereum.Web3.Accounts.Account(privateKey);
+                        //var ecKey = Nethereum.Signer.EthECKey.GenerateKey();
+                        //var privateKey = ecKey.GetPrivateKeyAsBytes().ToHex();
+                        //var account = new Nethereum.Web3.Accounts.Account(privateKey);
 
                         user = new User()
                         {
-                            Address = account.Address,
+                            //Address = account.Address,
                             Email = req.Email,
-                            Password = req.Password,
-                            Privatekey = privateKey
+                            Password = GenerateSHA512String(req.Email, req.Password),
+                            //Privatekey = privateKey
                         };
 
                         user.Id = daUser.InsertUser(user);
@@ -78,7 +76,7 @@ namespace IDMONEY.IO.Business
 
                 using (DAUser daUser = new DAUser())
                 {
-                    user = daUser.LoginUser(req.Email, req.Password);
+                    user = daUser.LoginUser(req.Email, GenerateSHA512String(req.Email, req.Password));
                 }
 
                 if (user != null)

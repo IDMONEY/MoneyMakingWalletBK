@@ -8,4 +8,9 @@ edite el archivo MSBuild. Visite https://go.microsoft.com/fwlink/?LinkID=208121 
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <_PublishTargetUrl>C:\Users\Jean Carlos M\Desktop\WebApi</_PublishTargetUrl>
   </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Server=aws-idm-rds.c9enxzkucdwa.us-west-2.rds.amazonaws.com;port=3518;Database=MMW_DB;user=yJUtAZUH1wWv7wQ;password=p7-4&gt;a&lt;dw42uCdR</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
 </Project>

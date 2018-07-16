@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,8 +54,26 @@ namespace IDMONEY.IO.Business
                //expires: expiration,
                signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return string.Format("Bearer {0}", new JwtSecurityTokenHandler().WriteToken(token));
 
+        }
+
+        protected static string GenerateSHA512String(string email, string password)
+        {
+            SHA512 sha512 = SHA512Managed.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(string.Format("{0}:{1}", email, password));
+            byte[] hash = sha512.ComputeHash(bytes);
+            return GetStringFromHash(hash);
+        }
+
+        private static string GetStringFromHash(byte[] hash)
+        {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                result.Append(hash[i].ToString("X2"));
+            }
+            return result.ToString();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace IDMONEY.IO.Entities
 { 
-    public class ReqLoginUser
+    public class ReqLoginUser : BaseRequest
     {
         public string Email { get; set; }
 

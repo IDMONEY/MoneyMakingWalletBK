@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace IDMONEY.IO.Entities
 {
-    public class ReqSaveEntryData
+    public class ReqSaveEntryData : BaseRequest
     {
         public List<DataEntry> DataEntries { get; set; }
     }

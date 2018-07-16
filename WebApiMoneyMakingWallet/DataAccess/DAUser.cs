@@ -29,29 +29,7 @@ namespace IDMONEY.IO.DataAccess
 
         public User GetUser(long userId)
         {
-            MySqlCommand cmd = new MySqlCommand("sp_GetUser", Connection);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("@p_user_id", userId);
-
-            User user = null;
-
-            using (MySqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    user = new User()
-                    {
-                        Address = reader["address"].ToString(),
-                        Email = reader["email"].ToString(),
-                        Password = reader["password"].ToString(),
-                        Privatekey = reader["private_key"].ToString(),
-                        Id = Convert.ToInt64(reader["user_id"]),
-                    };
-                }
-            }
-
-            return user;
+            return GetUser(null, userId);
         }
 
         public User LoginUser(string email, string password)
@@ -84,10 +62,16 @@ namespace IDMONEY.IO.DataAccess
 
         public User GetUser(string email)
         {
+            return GetUser(email, null);
+        }
+
+        private User GetUser(string email, long? userId)
+        {
             MySqlCommand cmd = new MySqlCommand("sp_GetUser", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@p_email", email);
+            cmd.Parameters.AddWithValue("@p_user_id", userId);
 
             User user = null;
             using (MySqlDataReader reader = cmd.ExecuteReader())
