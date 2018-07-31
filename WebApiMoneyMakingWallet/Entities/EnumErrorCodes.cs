@@ -8,7 +8,10 @@ namespace IDMONEY.IO.Entities
     public enum EnumErrorCodes
     {
         ErrorNotSpecific = 1,
-        Conflict = 409,
-        ErrorNotFound = 404
+        UserNotFound = 2,
+        BusinessNotFound = 3,
+        EmailIsRegistred = 4,
+        AmountInvalid = 5,
+        AvailableBalanceIsEnough = 6
     }
 }

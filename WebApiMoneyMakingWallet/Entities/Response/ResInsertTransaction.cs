@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace IDMONEY.IO.Entities
 {
-    public class ResSearchEntryData : BaseResponse
+    public class ResInsertTransaction : BaseResponse
     {
-        public List<DataEntry> DataEntries { get; set; }
+        public Transaction Transaction { get; set; }
     }
 }

@@ -19,6 +19,8 @@ namespace IDMONEY.IO.DataAccess
             cmd.Parameters.AddWithValue("@p_password", user.Password);
             cmd.Parameters.AddWithValue("@p_address", user.Address);
             cmd.Parameters.AddWithValue("@p_private_key", user.Privatekey);
+            cmd.Parameters.AddWithValue("@p_available_balance", user.AvailableBalance);
+            cmd.Parameters.AddWithValue("@p_blocked_balance", user.BlockedBalance);
             cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int32));
             cmd.Parameters["@p_id"].Direction = ParameterDirection.Output;
 
@@ -48,11 +50,8 @@ namespace IDMONEY.IO.DataAccess
                 {
                     user = new User()
                     {
-                        Address = reader["address"].ToString(),
                         Email = reader["email"].ToString(),
-                        Password = reader["password"].ToString(),
-                        Privatekey = reader["private_key"].ToString(),
-                        Id = Convert.ToInt64(reader["user_id"]),
+                        Id = Convert.ToInt64(reader["user_id"])
                     };
                 }
             }
@@ -82,9 +81,10 @@ namespace IDMONEY.IO.DataAccess
                     {
                         Address = reader["address"].ToString(),
                         Email = reader["email"].ToString(),
-                        Password = reader["password"].ToString(),
                         Privatekey = reader["private_key"].ToString(),
                         Id = Convert.ToInt64(reader["user_id"]),
+                        AvailableBalance = Convert.ToDecimal(reader["available_balance"]),
+                        BlockedBalance = Convert.ToDecimal(reader["blocked_balance"])
                     };
                 }
             }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IDMONEY.IO.Business;
 using IDMONEY.IO.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,15 @@ namespace IDMONEY.IO.Controllers
         {
             BSUser bSUser = new BSUser();
             return bSUser.Login(req);
+        }
+
+
+        [Route("Get")]
+        [HttpPost, Authorize]
+        public ResGetUser GetUser(BaseRequest req)
+        {
+            BSUser bSUser = new BSUser(HttpContext.User);
+            return bSUser.GetUser(req);
         }
     }
 }

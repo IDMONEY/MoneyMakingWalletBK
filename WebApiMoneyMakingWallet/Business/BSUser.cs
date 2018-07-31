@@ -14,6 +14,14 @@ namespace IDMONEY.IO.Business
 {
     public class BSUser : BaseBS
     {
+        public BSUser(ClaimsPrincipal claimsPrincipal) : base(claimsPrincipal)
+        {
+        }
+
+        public BSUser() : base()
+        {
+                
+        }
 
         public ResCreateUser CreateUser(ReqCreateUser req)
         {
@@ -38,6 +46,8 @@ namespace IDMONEY.IO.Business
                             //Privatekey = privateKey
                         };
 
+                        user.AvailableBalance = 0;
+                        user.BlockedBalance = 0;
                         user.Id = daUser.InsertUser(user);
 
                         res.User = user;
@@ -47,7 +57,7 @@ namespace IDMONEY.IO.Business
                     else
                     {
                         res.IsSuccessful = false;
-                        res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.Conflict).ToString(), Message = "That email is taken. Try another" });
+                        res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
                     }
                 }
             }
@@ -57,13 +67,24 @@ namespace IDMONEY.IO.Business
 
                 if (ex.Message.Contains("UK_users_emai"))
                 {
-                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.Conflict).ToString(), Message = "That email is taken. Try another" });
+                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
                 }
                 else
                 {
                     res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
                 }
             }
+            return res;
+        }
+
+        internal ResGetUser GetUser(BaseRequest req)
+        {
+            ResGetUser res = new ResGetUser();
+            using (DAUser daUser = new DAUser())
+            {
+                res.User = daUser.GetUser(User.Id);
+            }
+            res.IsSuccessful = true;
             return res;
         }
 
@@ -88,7 +109,7 @@ namespace IDMONEY.IO.Business
                 else
                 {
                     res.IsSuccessful = false;
-                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.ErrorNotFound).ToString(), Message = "Email or Password is incorrect" });
+                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.UserNotFound).ToString(), Message = "Email or Password is incorrect" });
                 }
             }
             catch (Exception ex)

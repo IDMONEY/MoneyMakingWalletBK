@@ -13,6 +13,10 @@ namespace IDMONEY.IO.Entities
 
         public string Address { get; set; }
 
+        public decimal AvailableBalance { get; set; }
+
+        public decimal BlockedBalance { get; set; }
+
         public string Password { get; set; }
 
         public string Privatekey { get; set; }

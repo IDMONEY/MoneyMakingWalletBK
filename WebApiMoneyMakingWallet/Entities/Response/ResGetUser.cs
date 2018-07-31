@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace IDMONEY.IO.Entities
 {
-    public class ReqSearchEntryData : BaseRequest
+    public class ResGetUser : BaseResponse
     {
+        public User User { get; set; }
     }
 }
