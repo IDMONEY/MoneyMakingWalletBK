@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IDMONEY.IO.Transactions;
 
-namespace IDMONEY.IO.Business
+namespace IDMONEY.IO.Services
 {
     public class BSBusiness : BaseBS
     {

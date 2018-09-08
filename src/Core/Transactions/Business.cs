@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IDMONEY.IO.Entities
+namespace IDMONEY.IO.Transactions
 {
     public class Business
     {

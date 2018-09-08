@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using IDMONEY.IO.Entities;
+using IDMONEY.IO.Transactions;
 using MySql.Data.MySqlClient;
 
 namespace IDMONEY.IO.DataAccess
 {
     public class DATransaction : DataAccess
     {
-        internal long InsertTransaction(int? businessId, long userId, decimal? amount, DateTime registrationDate, string description,
+        public long InsertTransaction(int? businessId, long userId, decimal? amount, DateTime registrationDate, string description,
                 int status)
         {
             MySqlCommand cmd = new MySqlCommand("sp_InsertTransaction", Connection);
@@ -30,8 +30,8 @@ namespace IDMONEY.IO.DataAccess
             return Convert.ToInt64(cmd.Parameters["@p_id"].Value);
         }
 
-        internal void UpdateTransaction(long? transactionId, int status, DateTime processingDate,
-            decimal? amount = null, Entities.Business business = null, User user = null)
+        public void UpdateTransaction(long? transactionId, int status, DateTime processingDate,
+            decimal? amount = null, Business business = null, User user = null)
         {
             using (MySqlTransaction transaction = Connection.BeginTransaction())
             {
@@ -81,7 +81,7 @@ namespace IDMONEY.IO.DataAccess
             }
         }
 
-        internal List<Transaction> SearchTransactionByUser(long userId)
+        public List<Transaction> SearchTransactionByUser(long userId)
         {
             MySqlCommand cmd = new MySqlCommand("sp_SearchTransactionByUser", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -113,7 +113,7 @@ namespace IDMONEY.IO.DataAccess
             return list;
         }
 
-        internal Transaction GetTransaction(long? transactionId)
+        public Transaction GetTransaction(long? transactionId)
         {
             MySqlCommand cmd = new MySqlCommand("sp_GetTransaction", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;

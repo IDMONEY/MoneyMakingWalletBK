@@ -10,9 +10,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IDMONEY.IO.Business
+namespace IDMONEY.IO.Services
 {
-    public class BaseBS
+    public abstract class BaseBS
     {
         private ClaimsPrincipal ClaimsPrincipal { get; set; }
 

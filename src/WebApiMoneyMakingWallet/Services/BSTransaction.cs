@@ -1,12 +1,15 @@
-﻿using IDMONEY.IO.DataAccess;
+﻿#region Libraries
+using IDMONEY.IO.DataAccess;
 using IDMONEY.IO.Entities;
+using IDMONEY.IO.Transactions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+#endregion
 
-namespace IDMONEY.IO.Business
+namespace IDMONEY.IO.Services
 {
     public class BSTransaction : BaseBS
     {
@@ -21,7 +24,7 @@ namespace IDMONEY.IO.Business
             {
                 DateTime registrationDate = DateTime.Now;
                 long? transactionId = null;
-                Entities.Business business = null;
+                Business business = null;
                 User user = null;
 
                 if (req.Transaction.Amount <= 0)
@@ -45,7 +48,7 @@ namespace IDMONEY.IO.Business
 
                 using (DATransaction da = new DATransaction())
                 {
-                    transactionId = da.InsertTransaction(req.Transaction.BusinessId, User.Id, req.Transaction.Amount, registrationDate, req.Transaction.Description, (int)EnumTransactionStatus.Registered);
+                    transactionId = da.InsertTransaction(req.Transaction.BusinessId, User.Id, req.Transaction.Amount, registrationDate, req.Transaction.Description, (int)TransactionStatus.Registered);
 
                     using (DAUser daUser = new DAUser())
                     {
@@ -55,12 +58,12 @@ namespace IDMONEY.IO.Business
                     DateTime processingDate = DateTime.Now;
                     if (user.AvailableBalance >= req.Transaction.Amount)
                     {
-                        da.UpdateTransaction(transactionId, (int)EnumTransactionStatus.Processed, processingDate, req.Transaction.Amount, 
+                        da.UpdateTransaction(transactionId, (int)TransactionStatus.Processed, processingDate, req.Transaction.Amount, 
                             business, user);
                     }
                     else
                     {
-                        da.UpdateTransaction(transactionId, (int)EnumTransactionStatus.Rejected, processingDate);
+                        da.UpdateTransaction(transactionId, (int)TransactionStatus.Rejected, processingDate);
                         res.IsSuccessful = false;
                         res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.AvailableBalanceIsEnough).ToString(), Message = "The available balance is not enough to make the transaction" });
                         return res;

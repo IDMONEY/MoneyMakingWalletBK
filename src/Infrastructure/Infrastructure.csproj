@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>IDMONEY.IO.Infrastructure</AssemblyName>
+    <RootNamespace>IDMONEY.IO.Infrastructure</RootNamespace>
+    <Company>IDMONEY</Company>
+    <Authors>IDMONEY.IO</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+</Project>

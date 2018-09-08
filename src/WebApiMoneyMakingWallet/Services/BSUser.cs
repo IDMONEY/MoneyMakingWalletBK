@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IDMONEY.IO.Business
+namespace IDMONEY.IO.Services
 {
     public class BSUser : BaseBS
     {

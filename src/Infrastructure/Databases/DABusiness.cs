@@ -3,26 +3,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IDMONEY.IO.Entities;
+using IDMONEY.IO;
+using IDMONEY.IO.Transactions;
 
 namespace IDMONEY.IO.DataAccess
 {
     public class DABusiness : DataAccess
     {
-        public List<Entities.Business> SearchBusiness(string name)
+        public List<Business> SearchBusiness(string name)
         {
             MySqlCommand cmd = new MySqlCommand("sp_SearchBusiness", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@piv_name", name);
 
-            List<Entities.Business> list = new List<Entities.Business>();
+            List<Business> list = new List<Business>();
 
             using (MySqlDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    list.Add(new Entities.Business()
+                    list.Add(new Business()
                     {
                         Image = reader["image"].ToString(),
                         Description = reader["description"].ToString(),
@@ -35,20 +36,20 @@ namespace IDMONEY.IO.DataAccess
             return list;
         }
 
-        public Entities.Business GetBusiness(int businessId)
+        public Business GetBusiness(int businessId)
         {
             MySqlCommand cmd = new MySqlCommand("sp_GetBusiness", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@p_businessId", businessId);
 
-            Entities.Business business = null;
+            Business business = null;
 
             using (MySqlDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    business = new Entities.Business()
+                    business = new Business()
                     {
                         Image = reader["image"].ToString(),
                         Description = reader["description"].ToString(),

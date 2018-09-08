@@ -61,16 +61,6 @@ namespace IDMONEY.IO
         }
     }
 
-    public class DataBaseContext
-    {
-        public static string CONNECTION_STRING { get; set; }
-
-        public DataBaseContext(string connectionString)
-        {
-            DataBaseContext.CONNECTION_STRING = connectionString;
-        }
-    }
-
     public class SecurityContext
     {
         public static string KEY { get; set; }
