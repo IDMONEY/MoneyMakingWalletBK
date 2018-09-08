@@ -1,5 +1,6 @@
 ﻿using IDMONEY.IO.DataAccess;
 using IDMONEY.IO.Entities;
+using IDMONEY.IO.Responses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -23,9 +24,9 @@ namespace IDMONEY.IO.Services
                 
         }
 
-        public ResCreateUser CreateUser(ReqCreateUser req)
+        public CreateUserResponse CreateUser(ReqCreateUser req)
         {
-            ResCreateUser res = new ResCreateUser();
+            CreateUserResponse res = new CreateUserResponse();
             try
             {
                 using (DAUser daUser = new DAUser())
@@ -77,9 +78,9 @@ namespace IDMONEY.IO.Services
             return res;
         }
 
-        internal ResGetUser GetUser(BaseRequest req)
+        internal UserResponse GetUser(BaseRequest req)
         {
-            ResGetUser res = new ResGetUser();
+            UserResponse res = new UserResponse();
             using (DAUser daUser = new DAUser())
             {
                 res.User = daUser.GetUser(User.Id);
@@ -88,9 +89,9 @@ namespace IDMONEY.IO.Services
             return res;
         }
 
-        public ResLoginUser Login(ReqLoginUser req)
+        public LoginUserResponse Login(ReqLoginUser req)
         {
-            ResLoginUser res = new ResLoginUser();
+            LoginUserResponse res = new LoginUserResponse();
             try
             {
                 User user;

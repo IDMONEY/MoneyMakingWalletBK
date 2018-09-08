@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+#region Libraries
 using System.Linq;
 using System.Threading.Tasks;
+using IDMONEY.IO.Responses; 
+#endregion
 
 namespace IDMONEY.IO.Controllers
 {
@@ -15,7 +18,7 @@ namespace IDMONEY.IO.Controllers
     {
         [Route("Search")]
         [HttpPost, Authorize]
-        public ResSearchBusiness SearchBusiness([FromBody]ReqSearchBusiness req)
+        public SearchBusinessResponse SearchBusiness([FromBody]ReqSearchBusiness req)
         {
             BSBusiness bSEntryData = new BSBusiness(HttpContext.User);
             return bSEntryData.SearchBusiness(req);

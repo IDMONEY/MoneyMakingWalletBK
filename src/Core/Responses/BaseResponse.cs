@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#region Libraries
+using System.Collections.Generic; 
+#endregion
 
-namespace IDMONEY.IO.Entities
+namespace IDMONEY.IO.Responses
 {
-    public class BaseResponse
+    public abstract class Response
     {
         public bool IsSuccessful { get; set; }
 
         public List<Error> Errors { get; set; }
 
-        public BaseResponse()
+        public Response()
         {
             Errors = new List<Error>();
         }

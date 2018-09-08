@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using IDMONEY.IO.Transactions;
 
-namespace IDMONEY.IO.Entities
+namespace IDMONEY.IO.Responses
 {
-    public class ResInsertTransaction : BaseResponse
+    public class InsertTransactionResponse : Response
     {
         public Transaction Transaction { get; set; }
     }

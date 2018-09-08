@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IDMONEY.IO.Transactions;
+using IDMONEY.IO.Responses;
 
 namespace IDMONEY.IO.Services
 {
@@ -15,9 +16,9 @@ namespace IDMONEY.IO.Services
         {
         }
 
-        public ResSearchBusiness SearchBusiness(ReqSearchBusiness req)
+        public SearchBusinessResponse SearchBusiness(ReqSearchBusiness req)
         {
-            ResSearchBusiness res = new ResSearchBusiness();
+            SearchBusinessResponse res = new SearchBusinessResponse();
 
             using (DABusiness da = new DABusiness())
             {

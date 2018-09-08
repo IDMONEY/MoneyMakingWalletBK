@@ -1,4 +1,5 @@
-﻿using IDMONEY.IO.Services;
+﻿#region Libraries
+using IDMONEY.IO.Services;
 using IDMONEY.IO.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IDMONEY.IO.Responses;
 
+#endregion
 namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
@@ -15,7 +18,7 @@ namespace IDMONEY.IO.Controllers
     {
         [Route("Insert")]
         [HttpPost, Authorize]
-        public ResInsertTransaction InsertTransaction([FromBody]ReqInsertTransaction req)
+        public InsertTransactionResponse InsertTransaction([FromBody]ReqInsertTransaction req)
         {
             BSTransaction bSTransaction = new BSTransaction(HttpContext.User);
             return bSTransaction.InsertTransaction(req);
@@ -23,7 +26,7 @@ namespace IDMONEY.IO.Controllers
 
         [Route("SearchByUser")]
         [HttpPost, Authorize]
-        public ResSearchTransaction SearchTransactionByUser([FromBody]BaseRequest req)
+        public SearchTransactionResponse SearchTransactionByUser([FromBody]BaseRequest req)
         {
             BSTransaction bSTransaction = new BSTransaction(HttpContext.User);
             return bSTransaction.SearchTransactionByUser(req);

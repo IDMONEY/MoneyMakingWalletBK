@@ -1,6 +1,7 @@
 ﻿#region Libraries
 using IDMONEY.IO.DataAccess;
 using IDMONEY.IO.Entities;
+using IDMONEY.IO.Responses;
 using IDMONEY.IO.Transactions;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,9 @@ namespace IDMONEY.IO.Services
         {
         }
 
-        public ResInsertTransaction InsertTransaction(ReqInsertTransaction req)
+        public InsertTransactionResponse InsertTransaction(ReqInsertTransaction req)
         {
-            ResInsertTransaction res = new ResInsertTransaction();
+            InsertTransactionResponse res = new InsertTransactionResponse();
             try
             {
                 DateTime registrationDate = DateTime.Now;
@@ -83,9 +84,9 @@ namespace IDMONEY.IO.Services
             return res;
         }
 
-        public ResSearchTransaction SearchTransactionByUser(BaseRequest req)
+        public SearchTransactionResponse SearchTransactionByUser(BaseRequest req)
         {
-            ResSearchTransaction res = new ResSearchTransaction();
+            SearchTransactionResponse res = new SearchTransactionResponse();
             using (DATransaction da = new DATransaction())
             {
                 res.Transactions = da.SearchTransactionByUser(User.Id);
