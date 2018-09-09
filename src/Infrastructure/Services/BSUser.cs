@@ -1,11 +1,9 @@
 ﻿using IDMONEY.IO.DataAccess;
-using IDMONEY.IO.Entities;
+using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using IDMONEY.IO.Users;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -15,7 +13,8 @@ namespace IDMONEY.IO.Services
 {
     public class BSUser : BaseBS
     {
-        public BSUser(ClaimsPrincipal claimsPrincipal) : base(claimsPrincipal)
+        public BSUser(ClaimsPrincipal claimsPrincipal) 
+            : base(claimsPrincipal)
         {
         }
 
@@ -24,7 +23,7 @@ namespace IDMONEY.IO.Services
                 
         }
 
-        public CreateUserResponse CreateUser(ReqCreateUser req)
+        public CreateUserResponse CreateUser(CreateUserRequest req)
         {
             CreateUserResponse res = new CreateUserResponse();
             try
@@ -43,7 +42,7 @@ namespace IDMONEY.IO.Services
                         {
                             //Address = account.Address,
                             Email = req.Email,
-                            Password = GenerateSHA512String(req.Email, req.Password),
+                            Password = $"{req.Email}:{req.Password}".GenerateSHA512(),
                             //Privatekey = privateKey
                         };
 
@@ -52,13 +51,13 @@ namespace IDMONEY.IO.Services
                         user.Id = daUser.InsertUser(user);
 
                         res.User = user;
-                        res.Token = BuildToken(user);
+                        //res.Token = BuildToken(user);
                         res.IsSuccessful = true;
                     }
                     else
                     {
                         res.IsSuccessful = false;
-                        res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
+                        res.Errors.Add(new Error() { Code = ((int)ErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
                     }
                 }
             }
@@ -68,17 +67,17 @@ namespace IDMONEY.IO.Services
 
                 if (ex.Message.Contains("UK_users_emai"))
                 {
-                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
+                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
                 }
                 else
                 {
-                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
+                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
                 }
             }
             return res;
         }
 
-        internal UserResponse GetUser(BaseRequest req)
+        public UserResponse GetUser(Request req)
         {
             UserResponse res = new UserResponse();
             using (DAUser daUser = new DAUser())
@@ -89,7 +88,7 @@ namespace IDMONEY.IO.Services
             return res;
         }
 
-        public LoginUserResponse Login(ReqLoginUser req)
+        public LoginUserResponse Login(LoginUserRequest req)
         {
             LoginUserResponse res = new LoginUserResponse();
             try
@@ -98,25 +97,26 @@ namespace IDMONEY.IO.Services
 
                 using (DAUser daUser = new DAUser())
                 {
-                    user = daUser.LoginUser(req.Email, GenerateSHA512String(req.Email, req.Password));
+                    user = daUser.LoginUser(req.Email, $"{req.Email}:{req.Password}".GenerateSHA512());
+      
                 }
 
                 if (user != null)
                 {
                     res.User = user;
-                    res.Token = BuildToken(user);
+                    //res.Token = BuildToken(user);
                     res.IsSuccessful = true;
                 }
                 else
                 {
                     res.IsSuccessful = false;
-                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.UserNotFound).ToString(), Message = "Email or Password is incorrect" });
+                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.UserNotFound).ToString(), Message = "Email or Password is incorrect" });
                 }
             }
             catch (Exception ex)
             {
                 res.IsSuccessful = false;
-                res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
+                res.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
             }
             return res;
         }

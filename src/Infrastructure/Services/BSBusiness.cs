@@ -1,5 +1,4 @@
 ﻿using IDMONEY.IO.DataAccess;
-using IDMONEY.IO.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Responses;
+using IDMONEY.IO.Requests;
 
 namespace IDMONEY.IO.Services
 {
@@ -16,7 +16,7 @@ namespace IDMONEY.IO.Services
         {
         }
 
-        public SearchBusinessResponse SearchBusiness(ReqSearchBusiness req)
+        public SearchBusinessResponse SearchBusiness(SearchBusinessRequest req)
         {
             SearchBusinessResponse res = new SearchBusinessResponse();
 

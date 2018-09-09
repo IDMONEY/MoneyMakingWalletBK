@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks; 
 #endregion
 
-namespace IDMONEY.IO.Entities
+namespace IDMONEY.IO
 {
-    public enum EnumErrorCodes
+    public enum ErrorCodes
     {
         ErrorNotSpecific = 1,
         UserNotFound = 2,

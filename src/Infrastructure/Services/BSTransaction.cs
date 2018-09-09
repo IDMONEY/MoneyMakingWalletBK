@@ -1,8 +1,9 @@
 ﻿#region Libraries
 using IDMONEY.IO.DataAccess;
-using IDMONEY.IO.Entities;
+using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Transactions;
+using IDMONEY.IO.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace IDMONEY.IO.Services
         {
         }
 
-        public InsertTransactionResponse InsertTransaction(ReqInsertTransaction req)
+        public InsertTransactionResponse InsertTransaction(InsertTransactionRequest req)
         {
             InsertTransactionResponse res = new InsertTransactionResponse();
             try
@@ -31,7 +32,7 @@ namespace IDMONEY.IO.Services
                 if (req.Transaction.Amount <= 0)
                 {
                     res.IsSuccessful = false;
-                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.AmountInvalid).ToString(), Message = "The amount is invalid" });
+                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.AmountInvalid).ToString(), Message = "The amount is invalid" });
                     return res;
                 }
 
@@ -43,7 +44,7 @@ namespace IDMONEY.IO.Services
                 if (business == null)
                 {
                     res.IsSuccessful = false;
-                    res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.BusinessNotFound).ToString(), Message = "The business not found" });
+                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.BusinessNotFound).ToString(), Message = "The business not found" });
                     return res;
                 }
 
@@ -66,7 +67,7 @@ namespace IDMONEY.IO.Services
                     {
                         da.UpdateTransaction(transactionId, (int)TransactionStatus.Rejected, processingDate);
                         res.IsSuccessful = false;
-                        res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.AvailableBalanceIsEnough).ToString(), Message = "The available balance is not enough to make the transaction" });
+                        res.Errors.Add(new Error() { Code = ((int)ErrorCodes.AvailableBalanceIsEnough).ToString(), Message = "The available balance is not enough to make the transaction" });
                         return res;
                     }
 
@@ -79,12 +80,12 @@ namespace IDMONEY.IO.Services
             catch (Exception ex)
             {
                 res.IsSuccessful = false;
-                res.Errors.Add(new Error() { Code = ((int)EnumErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
+                res.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
             }
             return res;
         }
 
-        public SearchTransactionResponse SearchTransactionByUser(BaseRequest req)
+        public SearchTransactionResponse SearchTransactionByUser(Request req)
         {
             SearchTransactionResponse res = new SearchTransactionResponse();
             using (DATransaction da = new DATransaction())

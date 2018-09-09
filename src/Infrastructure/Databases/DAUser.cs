@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using IDMONEY.IO;
+using IDMONEY.IO.Users;
 using MySql.Data.MySqlClient;
 
 namespace IDMONEY.IO.DataAccess

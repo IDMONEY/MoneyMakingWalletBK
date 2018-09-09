@@ -1,11 +1,13 @@
-﻿using System;
+﻿#region Libraries
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
+#endregion
 
-namespace IDMONEY.IO.Entities
+namespace IDMONEY.IO.Requests
 {
-    public class ReqCreateUser : BaseRequest
+    public class CreateUserRequest : Request
     {
         public string Email { get; set; }
 

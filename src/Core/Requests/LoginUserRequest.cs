@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IDMONEY.IO.Entities
+namespace IDMONEY.IO.Requests
 { 
-    public class ReqLoginUser : BaseRequest
+    public class LoginUserRequest : Request
     {
         public string Email { get; set; }
 

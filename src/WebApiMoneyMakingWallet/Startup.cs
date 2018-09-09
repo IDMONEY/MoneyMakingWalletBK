@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IDMONEY.IO.Cryptography;
+using IDMONEY.IO.Infrastructure;
+using IDMONEY.IO.Security;
+using IDMONEY.IO.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,7 +48,10 @@ namespace IDMONEY.IO
             services.AddMvc();
 
             services.Add(new ServiceDescriptor(typeof(DataBaseContext), new DataBaseContext(Configuration.GetConnectionString("DefaultConnection"))));
-            services.Add(new ServiceDescriptor(typeof(SecurityContext), new SecurityContext(Configuration["JWT:key"], Configuration["JWT:Issuer"], Configuration["JWT:Audience"])));
+            services.AddSingleton<ISecurityContext>(new SecurityContext(Configuration["JWT:key"], Configuration["JWT:Issuer"], Configuration["JWT:Audience"]));
+            services.AddSingleton<IUserRepository, MySqlUserRepository>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<ITokenGenerator, JwtSecurityTokenGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,7 +68,7 @@ namespace IDMONEY.IO
         }
     }
 
-    public class SecurityContext
+    /*public class SecurityContext
     {
         public static string KEY { get; set; }
 
@@ -75,5 +82,5 @@ namespace IDMONEY.IO
             SecurityContext.ISSUER = issuer;
             SecurityContext.AUDIENCE = audience;
         }
-    }
+    }*/
 }

@@ -3,38 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IDMONEY.IO.Services;
-using IDMONEY.IO.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using IDMONEY.IO.Responses;
+using IDMONEY.IO.Users;
+using IDMONEY.IO.Requests;
 
 namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
-    [Route("api/User")]
+    [Route("api/user")]
     public class UserController : Controller
     {
-        [Route("Create")]
-        [HttpPost]
-        public CreateUserResponse CreateUser([FromBody]ReqCreateUser req)
+        #region Members
+        private readonly IUserService userService; 
+        #endregion
+
+
+        public UserController(IUserService userService)
         {
-            BSUser bSUser = new BSUser();
-            return bSUser.CreateUser(req);
+            this.userService = userService;
         }
 
-        [Route("Login")]
         [HttpPost]
-        public LoginUserResponse Login([FromBody]ReqLoginUser req)
+        public CreateUserResponse CreateUser([FromBody]CreateUserRequest req)
+        {
+            return this.userService.Create(req);
+        }
+
+        [Route("login")]
+        [HttpPost]
+        public LoginUserResponse Login([FromBody]LoginUserRequest req)
         {
             BSUser bSUser = new BSUser();
             return bSUser.Login(req);
         }
 
 
-        [Route("Get")]
-        [HttpPost, Authorize]
-        public UserResponse GetUser(BaseRequest req)
+        [HttpGet]
+        public UserResponse GetUser(Request req)
         {
             BSUser bSUser = new BSUser(HttpContext.User);
             return bSUser.GetUser(req);
