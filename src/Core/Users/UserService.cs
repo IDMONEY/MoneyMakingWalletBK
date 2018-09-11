@@ -17,12 +17,18 @@ namespace IDMONEY.IO.Users
         private readonly ITokenGenerator tokenGenerator;
         #endregion
 
+        #region Constructor
         public UserService(IUserRepository userRepository, ITokenGenerator tokenGenerator)
         {
+            Ensure.IsNotNull(userRepository);
+            Ensure.IsNotNull(tokenGenerator);
+
             this.userRepository = userRepository;
             this.tokenGenerator = tokenGenerator;
         }
+        #endregion
 
+        #region Methods
         public CreateUserResponse Create(CreateUserRequest request)
         {
             CreateUserResponse response = new CreateUserResponse();
@@ -82,6 +88,7 @@ namespace IDMONEY.IO.Users
             }
 
             return response;
-        }
+        } 
+        #endregion
     }
 }

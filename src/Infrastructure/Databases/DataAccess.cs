@@ -17,7 +17,7 @@ namespace IDMONEY.IO.DataAccess
             {
                 ConnectionString = DataBaseContext.CONNECTION_STRING
             };
-            Connection.Open();
+            //Connection.Open();
         }
 
         public MySqlDataReader ExecuteQuery(string stringQuery)

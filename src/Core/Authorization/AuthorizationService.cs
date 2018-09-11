@@ -4,9 +4,10 @@ using System.Text;
 using IDMONEY.IO.Cryptography;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
+using IDMONEY.IO.Users;
 
 #endregion
-namespace IDMONEY.IO.Users
+namespace IDMONEY.IO.Authorization
 {
     public class AuthorizationService : IAuthorizationService
     {
@@ -18,6 +19,9 @@ namespace IDMONEY.IO.Users
 
         public AuthorizationService(IUserRepository userRepository, ITokenGenerator tokenGenerator)
         {
+            Ensure.IsNotNull(userRepository);
+            Ensure.IsNotNull(tokenGenerator);
+
             this.userRepository = userRepository;
             this.tokenGenerator = tokenGenerator;
         }

@@ -10,7 +10,7 @@ namespace IDMONEY.IO.Infrastructure
         //TODO: How to inject the database
         public long Add(User user)
         {
-            using (var daUser = new DAUser())
+            using (var daUser = new FakeUserDatabase())
             {
                 return daUser.InsertUser(user);
             }
@@ -18,7 +18,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public User GetByCredentials(string email, string password)
         {
-            using (var daUser = new DAUser())
+            using (var daUser = new FakeUserDatabase())
             {
                 return daUser.LoginUser(email, password);
             }
@@ -26,7 +26,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public User GetByEmail(string email)
         {
-            using (var daUser = new DAUser())
+            using (var daUser = new FakeUserDatabase())
             {
                 return daUser.GetUser(email);
             }
@@ -34,7 +34,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public User GetById(long id)
         {
-            using (var daUser = new DAUser())
+            using (var daUser = new FakeUserDatabase())
             {
                 return daUser.GetUser(id);
             }

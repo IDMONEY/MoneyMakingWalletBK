@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IDMONEY.IO.Authorization;
 using IDMONEY.IO.Cryptography;
 using IDMONEY.IO.Infrastructure;
 using IDMONEY.IO.Security;

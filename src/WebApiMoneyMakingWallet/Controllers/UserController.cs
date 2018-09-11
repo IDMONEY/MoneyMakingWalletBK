@@ -22,6 +22,8 @@ namespace IDMONEY.IO.Controllers
 
         public UserController(IUserService userService)
         {
+            Ensure.IsNotNull(userService);
+
             this.userService = userService;
         }
 
@@ -32,7 +34,7 @@ namespace IDMONEY.IO.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public UserResponse GetUser()
         {
             return this.userService.GetUser(HttpContext.User);

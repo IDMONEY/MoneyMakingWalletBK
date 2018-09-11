@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IDMONEY.IO;
+using IDMONEY.IO.Authorization;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Users;
@@ -24,6 +26,8 @@ namespace WebApiMoneyMakingWallet.Controllers
         #region Constructor
         public MembershipController(IAuthorizationService authorizationService)
         {
+            Ensure.IsNotNull(authorizationService);
+
             this.authorizationService = authorizationService;
         }
         #endregion
