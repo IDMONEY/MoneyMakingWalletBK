@@ -51,6 +51,7 @@ namespace IDMONEY.IO
             services.AddSingleton<ISecurityContext>(new SecurityContext(Configuration["JWT:key"], Configuration["JWT:Issuer"], Configuration["JWT:Audience"]));
             services.AddSingleton<IUserRepository, MySqlUserRepository>();
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IAuthorizationService, AuthorizationService>();
             services.AddSingleton<ITokenGenerator, JwtSecurityTokenGenerator>();
         }
 

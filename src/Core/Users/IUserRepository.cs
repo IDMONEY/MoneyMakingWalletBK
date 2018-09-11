@@ -9,6 +9,7 @@ namespace IDMONEY.IO.Users
     {
         long Add(User user);
         User GetById(long id);
+        User GetByCredentials(string email, string password);
         User GetByEmail(string email);
     }
 }

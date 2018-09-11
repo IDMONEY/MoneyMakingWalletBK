@@ -16,6 +16,14 @@ namespace IDMONEY.IO.Infrastructure
             }
         }
 
+        public User GetByCredentials(string email, string password)
+        {
+            using (DAUser daUser = new DAUser())
+            {
+                return daUser.LoginUser(email, password);
+            }
+        }
+
         public User GetByEmail(string email)
         {
             using (DAUser daUser = new DAUser())

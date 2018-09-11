@@ -20,7 +20,6 @@ namespace IDMONEY.IO.Controllers
         private readonly IUserService userService; 
         #endregion
 
-
         public UserController(IUserService userService)
         {
             this.userService = userService;
@@ -32,17 +31,9 @@ namespace IDMONEY.IO.Controllers
             return this.userService.Create(req);
         }
 
-        [Route("login")]
-        [HttpPost]
-        public LoginUserResponse Login([FromBody]LoginUserRequest req)
-        {
-            BSUser bSUser = new BSUser();
-            return bSUser.Login(req);
-        }
-
 
         [HttpGet,Authorize]
-        public UserResponse GetUser(Request req)
+        public UserResponse GetUser()
         {
             return this.userService.GetUser(HttpContext.User);
         }
