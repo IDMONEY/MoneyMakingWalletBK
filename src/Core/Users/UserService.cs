@@ -1,7 +1,12 @@
-﻿using System;
+﻿#region Libraries
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
 using IDMONEY.IO.Cryptography;
 using IDMONEY.IO.Requests;
-using IDMONEY.IO.Responses;
+using IDMONEY.IO.Responses; 
+#endregion
 
 namespace IDMONEY.IO.Users
 {
@@ -54,6 +59,27 @@ namespace IDMONEY.IO.Users
             }
 
 
+
+            return response;
+        }
+
+        public UserResponse GetUser(ClaimsPrincipal claimsPrincipal)
+        {
+            UserResponse response = new UserResponse();
+            var claim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti);
+
+            if (claim.IsNotNull())
+            {
+                long userId = Convert.ToInt64(claim.Value);
+                var user = this.userRepository.GetById(userId);
+
+                response.User = user;
+                response.IsSuccessful = true;
+            }
+            else
+            {
+                //TODO: USER NOT EXISTS
+            }
 
             return response;
         }

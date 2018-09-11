@@ -41,11 +41,10 @@ namespace IDMONEY.IO.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet,Authorize]
         public UserResponse GetUser(Request req)
         {
-            BSUser bSUser = new BSUser(HttpContext.User);
-            return bSUser.GetUser(req);
+            return this.userService.GetUser(HttpContext.User);
         }
     }
 }
