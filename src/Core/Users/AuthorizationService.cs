@@ -15,6 +15,13 @@ namespace IDMONEY.IO.Users
         private readonly ITokenGenerator tokenGenerator;
         #endregion
 
+
+        public AuthorizationService(IUserRepository userRepository, ITokenGenerator tokenGenerator)
+        {
+            this.userRepository = userRepository;
+            this.tokenGenerator = tokenGenerator;
+        }
+
         public LoginUserResponse Authorize(LoginUserRequest request)
         {
 

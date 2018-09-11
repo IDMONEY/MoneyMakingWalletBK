@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 
 namespace IDMONEY.IO.DataAccess
 {
-    public class DataAccess : IDisposable
+    public abstract class DataAccess : IDisposable
     {
 
         public MySqlConnection Connection { get; set; }

@@ -32,7 +32,7 @@ namespace IDMONEY.IO.Controllers
         }
 
 
-        [HttpGet,Authorize]
+        [HttpGet]
         public UserResponse GetUser()
         {
             return this.userService.GetUser(HttpContext.User);
