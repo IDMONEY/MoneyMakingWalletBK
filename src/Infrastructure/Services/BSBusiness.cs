@@ -1,12 +1,9 @@
-﻿using IDMONEY.IO.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿#region Libraries
+using IDMONEY.IO.DataAccess;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Responses;
-using IDMONEY.IO.Requests;
+using IDMONEY.IO.Requests; 
+#endregion
 
 namespace IDMONEY.IO.Services
 {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Requests;
+using IDMONEY.IO.Transactions;
 
 #endregion
 namespace IDMONEY.IO.Controllers
@@ -16,19 +17,32 @@ namespace IDMONEY.IO.Controllers
     [Route("api/transaction")]
     public class TransactionController : Controller
     {
-        [HttpPost, Authorize]
-        public InsertTransactionResponse InsertTransaction([FromBody]InsertTransactionRequest req)
+        #region Members
+        private readonly ITransactionService transactionService;
+        #endregion
+
+        #region Constructor
+        public TransactionController(ITransactionService transactionService)
         {
-            BSTransaction bSTransaction = new BSTransaction(HttpContext.User);
-            return bSTransaction.InsertTransaction(req);
+            Ensure.IsNotNull(transactionService);
+
+            this.transactionService = transactionService;
+        }
+        #endregion
+
+        #region Methods
+        [HttpPost, Authorize]
+        public Response InsertTransaction([FromBody]InsertTransactionRequest request)
+        {
+            return this.transactionService.Add(request);
         }
 
         [Route("SearchByUser")]
-        [HttpPost, Authorize]
-        public SearchTransactionResponse SearchTransactionByUser([FromBody]Request req)
+        [HttpGet, Authorize]
+        public SearchTransactionResponse SearchTransactionByUser()
         {
-            BSTransaction bSTransaction = new BSTransaction(HttpContext.User);
-            return bSTransaction.SearchTransactionByUser(req);
+            return this.transactionService.GetUserTransactions(HttpContext.User);
         }
+        #endregion
     }
 }

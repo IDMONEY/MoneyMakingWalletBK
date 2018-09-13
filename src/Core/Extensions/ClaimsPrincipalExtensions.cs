@@ -1,7 +1,9 @@
 ﻿#region Libraries
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims; 
+using System.Security.Claims;
+using IDMONEY.IO.Exceptions;
 #endregion
 
 namespace IDMONEY.IO.Security
@@ -17,6 +19,18 @@ namespace IDMONEY.IO.Security
         {
             return user.IsNotNull()
                 && requiredClaims.All(user.HasClaim);
+        }
+
+        public static long GetUserId(this ClaimsPrincipal claimsPrincipal)
+        {
+            var claim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti);
+
+            if (claim.IsNotNull())
+            {
+                return Convert.ToInt64(claim.Value);
+            }
+
+            throw new UserNotFoundException();
         }
     }
 }

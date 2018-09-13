@@ -7,6 +7,7 @@ using IDMONEY.IO.Authorization;
 using IDMONEY.IO.Cryptography;
 using IDMONEY.IO.Infrastructure;
 using IDMONEY.IO.Security;
+using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -50,10 +51,18 @@ namespace IDMONEY.IO
 
             services.Add(new ServiceDescriptor(typeof(DataBaseContext), new DataBaseContext(Configuration.GetConnectionString("DefaultConnection"))));
             services.AddSingleton<ISecurityContext>(new SecurityContext(Configuration["JWT:key"], Configuration["JWT:Issuer"], Configuration["JWT:Audience"]));
+
             services.AddSingleton<IUserRepository, MySqlUserRepository>();
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IAuthorizationService, AuthorizationService>();
+
+            services.AddSingleton<ITransactionRepository, MySqlTransactionRepository>();
+            services.AddSingleton<ITransactionService, TransactionService>();
+
+            services.AddSingleton<IBusinessRepository, MySqlBusinessRepository>();
+            services.AddSingleton<IBusinessService, BusinessService>();
+
             services.AddSingleton<ITokenGenerator, JwtSecurityTokenGenerator>();
+            services.AddSingleton<IAuthorizationService, AuthorizationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

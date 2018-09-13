@@ -17,6 +17,7 @@ namespace IDMONEY.IO.Authorization
         #endregion
 
 
+        #region Constructor
         public AuthorizationService(IUserRepository userRepository, ITokenGenerator tokenGenerator)
         {
             Ensure.IsNotNull(userRepository);
@@ -24,7 +25,8 @@ namespace IDMONEY.IO.Authorization
 
             this.userRepository = userRepository;
             this.tokenGenerator = tokenGenerator;
-        }
+        } 
+        #endregion
 
         public LoginUserResponse Authorize(LoginUserRequest request)
         {

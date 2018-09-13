@@ -28,14 +28,14 @@ namespace IDMONEY.IO.Controllers
         }
 
         [HttpPost]
-        public CreateUserResponse CreateUser([FromBody]CreateUserRequest req)
+        public Response CreateUser([FromBody]CreateUserRequest req)
         {
             return this.userService.Create(req);
         }
 
 
         [HttpGet, Authorize]
-        public UserResponse GetUser()
+        public Response GetUser()
         {
             return this.userService.GetUser(HttpContext.User);
         }
