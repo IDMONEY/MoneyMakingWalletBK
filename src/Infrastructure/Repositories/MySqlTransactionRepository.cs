@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using IDMONEY.IO.DataAccess;
 using IDMONEY.IO.Transactions;
+using IDMONEY.IO.Users;
 #endregion
 
 namespace IDMONEY.IO.Infrastructure
@@ -37,6 +38,14 @@ namespace IDMONEY.IO.Infrastructure
             using (var database = new DATransaction())
             {
                 database.UpdateTransaction(transaction);
+            }
+        }
+
+        public void Update(Transaction transaction, User user, Business business)
+        {
+            using (var database = new DATransaction())
+            {
+                database.UpdateTransaction(transaction, business, user);
             }
         }
     }

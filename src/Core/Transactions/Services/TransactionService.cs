@@ -35,6 +35,7 @@ namespace IDMONEY.IO.Transactions
         public InsertTransactionResponse Add(InsertTransactionRequest request)
         {
             InsertTransactionResponse response = new InsertTransactionResponse();
+            response.IsSuccessful = true;
 
             try
             {
@@ -66,7 +67,7 @@ namespace IDMONEY.IO.Transactions
                                .UpdateAmount(request.Transaction.Amount)
                                .SetProcessingDate(SystemTime.Now());
 
-                    this.transactionRepository.Update(transaction);
+                    this.transactionRepository.Update(transaction, user, business);
                 }
                 else
                 {
@@ -84,7 +85,7 @@ namespace IDMONEY.IO.Transactions
 
                 response.Transaction = this.GetTransaction(transactionID);
             }
-            catch (Exception)
+            catch (Exception exc)
             {
 
                 response.IsSuccessful = false;

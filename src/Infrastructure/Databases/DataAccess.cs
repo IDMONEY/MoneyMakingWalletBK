@@ -1,9 +1,9 @@
-﻿using System;
+﻿#region Libraries
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
+#endregion
 namespace IDMONEY.IO.DataAccess
 {
     public abstract class DataAccess : IDisposable
@@ -17,7 +17,7 @@ namespace IDMONEY.IO.DataAccess
             {
                 ConnectionString = DataBaseContext.CONNECTION_STRING
             };
-            //Connection.Open();
+            Connection.Open();
         }
 
         public MySqlDataReader ExecuteQuery(string stringQuery)
