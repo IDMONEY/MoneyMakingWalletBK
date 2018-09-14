@@ -1,4 +1,4 @@
-﻿#region MyRegion
+﻿#region Libraries
 using System.Collections.Generic;
 using IDMONEY.IO.Transactions; 
 #endregion
@@ -7,6 +7,6 @@ namespace IDMONEY.IO.Responses
 {
     public class SearchBusinessResponse : Response
     {
-        public List<Business> Businesses { get; set; }
+        public IList<Business> Businesses { get; set; }
     }
 }

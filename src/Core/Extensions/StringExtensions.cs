@@ -8,6 +8,7 @@ namespace IDMONEY.IO
 {
     public static class StringExtensions
     {
+        #region Methods
         public static string ToCamelCase(this string value)
         {
             return value.ConvertFirstCharacter(x => x.ToLowerInvariant());
@@ -34,7 +35,8 @@ namespace IDMONEY.IO
             byte[] bytes = Encoding.UTF8.GetBytes(value);
             byte[] hash = sha512.ComputeHash(bytes);
             return GetStringFromHash(hash);
-        }
+        } 
+        #endregion
 
         #region Private Methods
         private static string GetStringFromHash(byte[] hash)

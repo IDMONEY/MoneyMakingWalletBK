@@ -27,8 +27,31 @@ namespace IDMONEY.IO.Transactions
 
         public string Description { get; set; }
 
-        public int Status { get; set; }
+        public TransactionStatus Status { get; set; }
 
         public string StatusName { get; set; }
+
+
+        public Transaction ChangeStatus(TransactionStatus status)
+        {
+            //TODO CHECK IF ENUM IS DEFINED;
+            this.Status = status;
+            return this;
+        }
+
+        public Transaction UpdateAmount(decimal? amount)
+        {
+            //TODO CHECK IF ENUM IS DEFINED;
+            this.Amount = amount;
+            return this;
+        }
+        
+
+        public Transaction SetProcessingDate(DateTime? processingDate)
+        {
+            //TODO CHECK IF ENUM IS DEFINED;
+            this.ProcessingDate = processingDate;
+            return this;
+        }
     }
 }

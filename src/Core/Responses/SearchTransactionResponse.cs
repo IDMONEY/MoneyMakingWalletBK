@@ -7,6 +7,6 @@ namespace IDMONEY.IO.Responses
 {
     public class SearchTransactionResponse : Response
     {
-        public List<Transaction> Transactions { get; set; }
+        public IList<Transaction> Transactions { get; set; }
     }
 }

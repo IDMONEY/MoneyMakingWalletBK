@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Users;
 using MySql.Data.MySqlClient;
@@ -11,27 +9,31 @@ namespace IDMONEY.IO.DataAccess
 {
     public class DATransaction : DataAccess
     {
-        public long InsertTransaction(int? businessId, long userId, decimal? amount, DateTime registrationDate, string description,
-                int status)
+        public long InsertTransaction(TransactionCandidate candidate)
         {
             MySqlCommand cmd = new MySqlCommand("sp_InsertTransaction", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
             cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int32));
             cmd.Parameters["@p_id"].Direction = ParameterDirection.Output;
-            cmd.Parameters.AddWithValue("@p_business_id", businessId);
-            cmd.Parameters.AddWithValue("@p_user_id", userId);
-            cmd.Parameters.AddWithValue("@p_amount", amount);
-            cmd.Parameters.AddWithValue("@p_registration_date", registrationDate);
-            cmd.Parameters.AddWithValue("@p_description", description);
-            cmd.Parameters.AddWithValue("@p_status", status);
+            cmd.Parameters.AddWithValue("@p_business_id", candidate.BusinessId);
+            cmd.Parameters.AddWithValue("@p_user_id", candidate.UserId);
+            cmd.Parameters.AddWithValue("@p_amount", candidate.Amount);
+            cmd.Parameters.AddWithValue("@p_registration_date", candidate.RegistrationDate);
+            cmd.Parameters.AddWithValue("@p_description", candidate.Description);
+            cmd.Parameters.AddWithValue("@p_status", candidate.Status);
 
             cmd.ExecuteNonQuery();
 
             return Convert.ToInt64(cmd.Parameters["@p_id"].Value);
         }
 
-        public void UpdateTransaction(long? transactionId, int status, DateTime processingDate,
+        public void UpdateTransaction(Transaction transaction, Business business = null, User user = null)
+        {
+            this.UpdateTransaction(transaction.Id, transaction.Status, transaction.ProcessingDate.Value, transaction.Amount, business, user);
+        }
+
+        public void UpdateTransaction(long? transactionId, TransactionStatus status, DateTime processingDate,
             decimal? amount = null, Business business = null, User user = null)
         {
             using (MySqlTransaction transaction = Connection.BeginTransaction())
@@ -43,11 +45,11 @@ namespace IDMONEY.IO.DataAccess
 
                     cmd.Parameters.AddWithValue("@p_id", transactionId);
                     cmd.Parameters.AddWithValue("@p_processing_date", processingDate);
-                    cmd.Parameters.AddWithValue("@p_status", status);
+                    cmd.Parameters.AddWithValue("@p_status", (int)status);
 
                     cmd.ExecuteNonQuery();
 
-                    if (amount != null)
+                    if (amount.IsNotNull())
                     {
                         cmd = new MySqlCommand("sp_UpdateBalanceUser", Connection);
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -104,7 +106,7 @@ namespace IDMONEY.IO.DataAccess
                         Description = Convert.IsDBNull(reader["description"]) ? null : reader["description"].ToString(),
                         ProcessingDate = Convert.IsDBNull(reader["processing_date"]) ? null : (DateTime?)Convert.ToDateTime(reader["processing_date"]),
                         RegistrationDate = Convert.ToDateTime(reader["registration_date"]),
-                        Status = Convert.ToInt32(reader["status"]),
+                        Status = (TransactionStatus)Convert.ToInt32(reader["status"]),
                         StatusName = reader["StatusName"].ToString(),
                         UserId = (int?)Convert.ToInt64(reader["user_id"])
                     });
@@ -136,7 +138,7 @@ namespace IDMONEY.IO.DataAccess
                         Description = Convert.IsDBNull(reader["description"]) ? null : reader["description"].ToString(),
                         ProcessingDate = Convert.IsDBNull(reader["processing_date"]) ? null : (DateTime?)Convert.ToDateTime(reader["processing_date"]),
                         RegistrationDate = Convert.ToDateTime(reader["registration_date"]),
-                        Status = Convert.ToInt32(reader["status"]),
+                        Status = (TransactionStatus)Convert.ToInt32(reader["status"]),
                         StatusName = reader["StatusName"].ToString(),
                         UserId = (int?)Convert.ToInt64(reader["user_id"])
                     };

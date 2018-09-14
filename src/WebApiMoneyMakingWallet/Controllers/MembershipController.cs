@@ -32,11 +32,13 @@ namespace WebApiMoneyMakingWallet.Controllers
         }
         #endregion
 
+        #region Methods
         [Route("login")]
         [HttpPut]
-        public LoginUserResponse Login([FromBody]LoginUserRequest request)
+        public Response Login([FromBody]LoginUserRequest request)
         {
             return authorizationService.Authorize(request);
-        }
+        } 
+        #endregion
     }
 }
