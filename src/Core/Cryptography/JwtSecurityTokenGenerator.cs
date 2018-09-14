@@ -11,6 +11,10 @@ namespace IDMONEY.IO.Cryptography
 {
     public class JwtSecurityTokenGenerator : ITokenGenerator
     {
+        #region Constants
+        private const int MAX_HOURS_TO_BE_EXPIRED = 1;
+        #endregion
+
         #region Members
         private readonly ISecurityContext securityContext; 
         #endregion
@@ -30,7 +34,7 @@ namespace IDMONEY.IO.Cryptography
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.securityContext.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expiration = DateTime.UtcNow.AddHours(1);
+            var expiration = SystemTime.Now().AddHours(MAX_HOURS_TO_BE_EXPIRED);
 
             JwtSecurityToken token = new JwtSecurityToken(
                issuer: this.securityContext.Issuer,

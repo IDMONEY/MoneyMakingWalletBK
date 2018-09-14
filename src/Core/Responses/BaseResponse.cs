@@ -10,7 +10,7 @@ namespace IDMONEY.IO.Responses
 
         public List<Error> Errors { get; set; }
 
-        public Response()
+        protected Response()
         {
             Errors = new List<Error>();
         }

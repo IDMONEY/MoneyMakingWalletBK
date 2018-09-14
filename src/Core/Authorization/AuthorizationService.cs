@@ -25,9 +25,10 @@ namespace IDMONEY.IO.Authorization
 
             this.userRepository = userRepository;
             this.tokenGenerator = tokenGenerator;
-        } 
+        }
         #endregion
 
+        #region Methods
         public LoginUserResponse Authorize(LoginUserRequest request)
         {
 
@@ -55,6 +56,7 @@ namespace IDMONEY.IO.Authorization
                 response.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
             }
             return response;
-        }
+        } 
+        #endregion
     }
 }

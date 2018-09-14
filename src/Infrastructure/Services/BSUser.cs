@@ -113,7 +113,7 @@ namespace IDMONEY.IO.Services
                     res.Errors.Add(new Error() { Code = ((int)ErrorCodes.UserNotFound).ToString(), Message = "Email or Password is incorrect" });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 res.IsSuccessful = false;
                 res.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });

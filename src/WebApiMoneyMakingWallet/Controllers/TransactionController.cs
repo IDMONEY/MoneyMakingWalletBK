@@ -14,7 +14,7 @@ using IDMONEY.IO.Transactions;
 namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
-    [Route("api/transaction")]
+    [Route("api/transactions")]
     public class TransactionController : Controller
     {
         #region Members
@@ -37,12 +37,13 @@ namespace IDMONEY.IO.Controllers
             return this.transactionService.Add(request);
         }
 
-        [Route("SearchByUser")]
         [HttpGet, Authorize]
         public SearchTransactionResponse SearchTransactionByUser()
         {
             return this.transactionService.GetUserTransactions(HttpContext.User);
         }
+
+        //TODO: FindByStatus
         #endregion
     }
 }

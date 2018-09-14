@@ -13,6 +13,8 @@ namespace IDMONEY.IO.Transactions
         #region Constructor
         public BusinessService(IBusinessRepository businessRepository)
         {
+            Ensure.IsNotNull(businessRepository);
+
             this.businessRepository = businessRepository;
         }
         #endregion

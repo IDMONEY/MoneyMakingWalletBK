@@ -1,4 +1,5 @@
-﻿using System;
+﻿#region Libraries
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Users;
-using IDMONEY.IO.Requests;
+using IDMONEY.IO.Requests; 
+#endregion
 
 namespace IDMONEY.IO.Controllers
 {

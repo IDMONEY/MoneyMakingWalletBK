@@ -24,6 +24,8 @@ namespace IDMONEY.IO.Controllers
 
         public BusinessController(IBusinessService businessService)
         {
+            Ensure.IsNotNull(businessService);
+
             this.businessService = businessService;
         }
 
