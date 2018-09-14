@@ -39,6 +39,7 @@ namespace IDMONEY.IO.Controllers
         [HttpGet, Authorize]
         public Response GetUser()
         {
+            throw new NotFiniteNumberException();
             return this.userService.GetUser(HttpContext.User);
         }
     }

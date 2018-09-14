@@ -42,7 +42,7 @@ namespace IDMONEY.IO.Transactions
                 if (request.Transaction.Amount <= 0)
                 {
                     response.IsSuccessful = false;
-                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.AmountInvalid).ToString(), Message = "The amount is invalid" });
+                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.InvalidAmount).ToString(), Message = "The amount is invalid" });
                     return response;
                 }
 
@@ -51,7 +51,7 @@ namespace IDMONEY.IO.Transactions
                 if (business.IsNull())
                 {
                     response.IsSuccessful = false;
-                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.BusinessNotFound).ToString(), Message = "The business was not found" });
+                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.NotFound).ToString(), Message = "The business was not found" });
                     return response;
                 }
 
@@ -89,7 +89,7 @@ namespace IDMONEY.IO.Transactions
             {
 
                 response.IsSuccessful = false;
-                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
+                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
             }
 
             return response;
@@ -107,7 +107,7 @@ namespace IDMONEY.IO.Transactions
             {
 
                 response.IsSuccessful = false;
-                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
+                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
             }
             return response;
         }

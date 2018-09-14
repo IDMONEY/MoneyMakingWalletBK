@@ -59,7 +59,7 @@ namespace IDMONEY.IO.Users
             else
             {
                 response.IsSuccessful = false;
-                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
+                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.EmailAlreadyRegistred).ToString(), Message = "That email is taken. Try another" });
             }
 
 
@@ -73,7 +73,6 @@ namespace IDMONEY.IO.Users
 
             long userId = claimsPrincipal.GetUserId();
             var user = this.userRepository.GetById(userId);
-
             response.User = user;
             response.IsSuccessful = true;
 

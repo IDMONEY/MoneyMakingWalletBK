@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IDMONEY.IO.Authorization;
 using IDMONEY.IO.Cryptography;
+using IDMONEY.IO.ErrorHandling;
 using IDMONEY.IO.Infrastructure;
 using IDMONEY.IO.Security;
 using IDMONEY.IO.Transactions;
@@ -18,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace IDMONEY.IO
 {
@@ -47,7 +49,7 @@ namespace IDMONEY.IO
                     jwtconfig.TokenValidationParameters = tokenParams;
                 });
 
-            services.AddMvc();
+            services.AddWebApi(/*config => config.Filters.Add(typeof(IDMoneyExceptionFilter))*/);
 
             services.Add(new ServiceDescriptor(typeof(DataBaseContext), new DataBaseContext(Configuration.GetConnectionString("DefaultConnection"))));
             services.AddSingleton<ISecurityContext>(new SecurityContext(Configuration["JWT:key"], Configuration["JWT:Issuer"], Configuration["JWT:Audience"]));
@@ -68,14 +70,10 @@ namespace IDMONEY.IO
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseAuthentication();
-
-            app.UseMvc();
+            app.UseExceptionHandler()
+                .UseExceptionHandling()
+                .UseAuthentication()
+                .UseMvc();
         }
     }
 

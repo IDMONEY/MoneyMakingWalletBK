@@ -1,4 +1,5 @@
 ﻿#region Libraries
+using IDMONEY.IO.Exceptions;
 using IDMONEY.IO.Responses;
 #endregion
 
@@ -23,7 +24,13 @@ namespace IDMONEY.IO.Transactions
         public SearchBusinessResponse Get(string name)
         {
             SearchBusinessResponse response = new SearchBusinessResponse();
-            response.Businesses = this.businessRepository.Get(name);
+            var businesses = this.businessRepository.Get(name);
+
+            if (businesses.IsNull())
+            {
+                throw new NotFoundException("Businesses not found");
+            }
+            response.Businesses = businesses;
 
             return response;
         } 

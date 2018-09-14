@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using IDMONEY.IO.Cryptography;
+using IDMONEY.IO.Exceptions;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Users;
@@ -47,13 +48,12 @@ namespace IDMONEY.IO.Authorization
                 else
                 {
                     response.IsSuccessful = false;
-                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.UserNotFound).ToString(), Message = "Email or Password is incorrect" });
+                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.NotFound).ToString(), Message = "Email or Password is incorrect" });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                response.IsSuccessful = false;
-                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
+                throw new IDMoneyException(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
             }
             return response;
         } 

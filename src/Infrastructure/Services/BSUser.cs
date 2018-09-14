@@ -57,7 +57,7 @@ namespace IDMONEY.IO.Services
                     else
                     {
                         res.IsSuccessful = false;
-                        res.Errors.Add(new Error() { Code = ((int)ErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
+                        res.Errors.Add(new Error() { Code = ((int)ErrorCodes.EmailAlreadyRegistred).ToString(), Message = "That email is taken. Try another" });
                     }
                 }
             }
@@ -67,11 +67,11 @@ namespace IDMONEY.IO.Services
 
                 if (ex.Message.Contains("UK_users_emai"))
                 {
-                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.EmailIsRegistred).ToString(), Message = "That email is taken. Try another" });
+                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.EmailAlreadyRegistred).ToString(), Message = "That email is taken. Try another" });
                 }
                 else
                 {
-                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
+                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
                 }
             }
             return res;
@@ -110,13 +110,13 @@ namespace IDMONEY.IO.Services
                 else
                 {
                     res.IsSuccessful = false;
-                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.UserNotFound).ToString(), Message = "Email or Password is incorrect" });
+                    res.Errors.Add(new Error() { Code = ((int)ErrorCodes.NotFound).ToString(), Message = "Email or Password is incorrect" });
                 }
             }
             catch (Exception)
             {
                 res.IsSuccessful = false;
-                res.Errors.Add(new Error() { Code = ((int)ErrorCodes.ErrorNotSpecific).ToString(), Message = "There was a problem. Please try again later" });
+                res.Errors.Add(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
             }
             return res;
         }
