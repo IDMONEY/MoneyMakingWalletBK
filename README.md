@@ -17,5 +17,9 @@ There are different ways you can contribute to this project, contributing code i
 ## Community
 Followers can be found on [Twitter](https://twitter.com/IDMoneyHDN)
 
+## Contributing
+Please take a look at our [contributing](CONTRIBUTING.md) guidelines if you're interested in helping!
+Contributions are always welcome! 
+
 ## Contributors
 A full list of contributors will be available soon
