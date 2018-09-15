@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace IDMONEY.IO
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -21,7 +21,7 @@ namespace IDMONEY.IO
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+                   .UseStartup<Startup>()
+                   .Build();
     }
 }
