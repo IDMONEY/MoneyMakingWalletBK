@@ -79,7 +79,7 @@ namespace IDMONEY.IO.Transactions
                     this.transactionRepository.Update(transaction);
 
                     response.IsSuccessful = false;
-                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.AvailableBalanceIsEnough).ToString(), Message = "The available balance is not enough to make the transaction" });
+                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.InsufficientFunds).ToString(), Message = "The available balance is not enough to make the transaction" });
                     return response;
                 }
 
