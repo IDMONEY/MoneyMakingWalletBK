@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IDMONEY.IO.IoC
 {
-    public static class NativeInjectorBootStrapper
+    public static class NativeInjectorBootstrapper
     {
         public static void RegisterServices(IServiceCollection services)
         {

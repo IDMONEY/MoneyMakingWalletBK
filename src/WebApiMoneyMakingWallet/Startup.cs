@@ -44,7 +44,7 @@ namespace IDMONEY.IO
 
         private static void RegisterServices(IServiceCollection services)
         {
-            NativeInjectorBootStrapper.RegisterServices(services);
+            NativeInjectorBootstrapper.RegisterServices(services);
         }
     }
 }
