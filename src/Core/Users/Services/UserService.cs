@@ -3,7 +3,8 @@ using IDMONEY.IO.Security;
 using System.Security.Claims;
 using IDMONEY.IO.Cryptography;
 using IDMONEY.IO.Requests;
-using IDMONEY.IO.Responses; 
+using IDMONEY.IO.Responses;
+using IDMONEY.IO.Exceptions;
 #endregion
 
 namespace IDMONEY.IO.Users
@@ -73,9 +74,14 @@ namespace IDMONEY.IO.Users
 
             long userId = claimsPrincipal.GetUserId();
             var user = this.userRepository.GetById(userId);
+
+            if (user.IsNull())
+            {
+                throw new NotFoundException("User not found");
+            }
+
             response.User = user;
             response.IsSuccessful = true;
-
             return response;
         }
         #endregion
