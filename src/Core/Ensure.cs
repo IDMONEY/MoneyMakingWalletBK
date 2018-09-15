@@ -32,5 +32,90 @@ namespace IDMONEY.IO
                 throw new ArgumentException($"{nameof(parameter)} cannot be null or empty");
             }
         }
+
+        /// <summary>
+        /// Determines whether the given argument is not negative or zero.
+        /// </summary>
+        /// <param name="parameter">The numeric value.</param>
+        /// <param name="parameterName">The parameter's name</param>
+        [DebuggerStepThrough]
+        public static void IsNotNegativeOrZero(long parameter)
+        {
+            if (parameter <= 0)
+            {
+                throw new ArgumentException($"{nameof(parameter)} cannot be negative or equals to zero");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the given argument is not negative.
+        /// </summary>
+        /// <param name="parameter">The numeric value.</param>
+        /// <param name="parameterName">The parameter's name.</param>
+        [DebuggerStepThrough]
+        public static void IsNotNegative(long parameter, string parameterName)
+        {
+            if (parameter < 0)
+            {
+                throw new ArgumentException($"{nameof(parameter)} cannot be negative");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the given argument is not negative or zero.
+        /// </summary>
+        /// <param name="parameter">The numeric value.</param>
+        /// <param name="parameterName">The parameter's name</param>
+        [DebuggerStepThrough]
+        public static void IsNotNegativeOrZero(float parameter, string parameterName)
+        {
+            if (parameter <= 0)
+            {
+                throw new ArgumentException($"{nameof(parameter)} cannot be negative or equals to zero");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the given argument is not negative.
+        /// </summary>
+        /// <param name="parameter">The numeric value.</param>
+        /// <param name="parameterName">The parameter's name.</param>
+        [DebuggerStepThrough]
+        public static void IsNotNegative(float parameter, string parameterName)
+        {
+            if (parameter < 0)
+            {
+                throw new ArgumentException($"{nameof(parameter)} cannot be negative");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the given argument is not negative or zero.
+        /// </summary>
+        /// <param name="parameter">The numeric value.</param>
+        /// <param name="parameterName">The parameter's name</param>
+        [DebuggerStepThrough]
+        public static void IsNotNegativeOrZero(double parameter, string parameterName)
+        {
+            if (parameter <= 0)
+            {
+                throw new ArgumentException($"{nameof(parameter)} cannot be negative or equals to zero");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the given argument is not negative.
+        /// </summary>
+        /// <param name="parameter">The numeric value.</param>
+        /// <param name="parameterName">The parameter's name.</param>
+        [DebuggerStepThrough]
+        public static void IsNotNegative(double parameter, string parameterName)
+        {
+            if (parameter < 0)
+            {
+                throw new ArgumentException($"{nameof(parameter)} cannot be negative");
+            }
+        }
+
     }
 }

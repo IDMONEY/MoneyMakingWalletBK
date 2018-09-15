@@ -1,4 +1,5 @@
 ﻿#region Libraries
+using System;
 using System.Collections.Generic;
 using IDMONEY.IO.DataAccess;
 using IDMONEY.IO.Transactions; 
@@ -21,6 +22,14 @@ namespace IDMONEY.IO.Infrastructure
             using (var database = new DABusiness())
             {
                 return database.SearchBusiness(name);
+            }
+        }
+
+        public IList<Business> GetAll()
+        {
+            using (var database = new DABusiness())
+            {
+                return database.SearchBusiness(null);
             }
         }
     }

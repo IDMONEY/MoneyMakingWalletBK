@@ -15,7 +15,7 @@ using IDMONEY.IO.Requests;
 namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
-    [Route("api/user")]
+    [Route("api/users")]
     public class UserController : Controller
     {
         #region Members

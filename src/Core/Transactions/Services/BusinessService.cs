@@ -1,4 +1,6 @@
 ﻿#region Libraries
+using System;
+using System.Collections.Generic;
 using IDMONEY.IO.Exceptions;
 using IDMONEY.IO.Responses;
 #endregion
@@ -21,22 +23,34 @@ namespace IDMONEY.IO.Transactions
 
         public SearchBusinessResponse FindByName(string name)
         {
-            return this.Get(name);
+            return this.Get(() => this.businessRepository.FindByName(name));
+        }
+
+        public BusinessResponse Get(int id)
+        {
+            var business = this.businessRepository.Get(id);
+
+            if (business.IsNull())
+            {
+                throw new NotFoundException("Business not found");
+            }
+            return new BusinessResponse()
+            {
+                Business = business
+            };
+        }
+
+        public SearchBusinessResponse GetAll()
+        {
+            return this.Get(() => this.businessRepository.GetAll());
         }
         #endregion
 
         #region Methods
-        public SearchBusinessResponse Get(string name)
+        private SearchBusinessResponse Get(Func<IList<Business>> action)
         {
             SearchBusinessResponse response = new SearchBusinessResponse();
-            var businesses = this.businessRepository.FindByName(name);
-
-            if (businesses.IsNull())
-            {
-                throw new NotFoundException("Businesses not found");
-            }
-            response.Businesses = businesses;
-
+            response.Businesses = action();
             return response;
         } 
         #endregion

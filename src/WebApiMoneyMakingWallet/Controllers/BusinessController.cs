@@ -28,15 +28,32 @@ namespace IDMONEY.IO.Controllers
             Ensure.IsNotNull(businessService);
 
             this.businessService = businessService;
-        } 
+        }
         #endregion
 
         #region Methods
+
+        [Route("{name:alpha}")]
         [HttpGet, Authorize]
         public Response SearchBusiness(string name)
         {
             Ensure.IsNotNullOrEmpty(name);
             return this.businessService.FindByName(name);
+        }
+
+
+        [Route("{id:int}")]
+        [HttpGet, Authorize]
+        public Response SearchBusiness(int id)
+        {
+            Ensure.IsNotNegativeOrZero(id);
+            return this.businessService.Get(id);
+        }
+
+        [HttpGet, Authorize]
+        public Response Get()
+        {
+            return this.businessService.GetAll();
         }
         #endregion
     }

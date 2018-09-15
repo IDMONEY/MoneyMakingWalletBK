@@ -10,5 +10,6 @@ namespace IDMONEY.IO.Transactions
     {
         Business Get(int id);
         IList<Business> FindByName(string name);
+        IList<Business> GetAll ();
     }
 }
