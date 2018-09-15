@@ -36,7 +36,7 @@ namespace IDMONEY.IO.Authorization
             LoginUserResponse response = new LoginUserResponse();
             try
             {
-                var user = this.userRepository.GetByCredentials(request.Email, request.Password);
+                var user = this.userRepository.GetByCredentials(request.Email, $"{request.Email}:{request.Password}".GenerateSHA512());
 
 
                 if (user.IsNotNull())
