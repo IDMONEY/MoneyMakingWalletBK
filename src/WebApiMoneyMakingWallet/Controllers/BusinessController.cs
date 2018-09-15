@@ -22,19 +22,23 @@ namespace IDMONEY.IO.Controllers
         private readonly IBusinessService businessService;
         #endregion
 
+        #region Constructor
         public BusinessController(IBusinessService businessService)
         {
             Ensure.IsNotNull(businessService);
 
             this.businessService = businessService;
-        }
+        } 
+        #endregion
 
+        #region Methods
         [Route("search")]
         [HttpGet, Authorize]
         public Response SearchBusiness([FromBody]SearchBusinessRequest req)
         {
             BSBusiness bSEntryData = new BSBusiness(HttpContext.User);
             return bSEntryData.SearchBusiness(req);
-        }
+        } 
+        #endregion
     }
 }
