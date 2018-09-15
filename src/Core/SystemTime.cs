@@ -22,7 +22,7 @@ namespace IDMONEY.IO
 
         /// <summary>
         /// Resets the current date and time value to its default.
-        /// <remarks>(The default value is DateTime.Now)</remarks>
+        /// <remarks>(The default value is DateTime.UtcNow)</remarks>
         /// </summary>
         public static void ResetNow()
         {
