@@ -11,8 +11,9 @@ namespace IDMONEY.IO
     {
         Unknown = 1,
         NotFound = 2,
+        NotAuthorized = 3,
         EmailAlreadyRegistred = 4,
         InvalidAmount = 5,
-        AvailableBalanceIsEnough = 6
+        InsufficientFunds = 6
     }
 }
