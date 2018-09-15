@@ -11,32 +11,22 @@ namespace IDMONEY.IO
     /// </summary>
     public static class SystemTime
     {
-        private static Func<DateTime> now = () => DateTime.UtcNow;
-
         /// <summary>
         /// Returns the current date and time.
         /// <remarks>
-        /// This is an alias for DateTime.Now; however, given that it's writable,
+        /// This is an alias for DateTime.UtcNow; however, given that it's writable,
         /// it makes unit testing of time-sensitive code far easier.
         /// </remarks>
         /// </summary>
-        public static Func<DateTime> Now
-        {
-            [DebuggerStepThrough]
-            get
-            { return now; }
-            [DebuggerStepThrough]
-            set
-            { now = value; }
-        }
+        public static Func<DateTime> Now { [DebuggerStepThrough]get; [DebuggerStepThrough]set; } = () => DateTime.UtcNow;
 
         /// <summary>
         /// Resets the current date and time value to its default.
-        /// <remarks>(The default value is DateTime.Now)</remarks>
+        /// <remarks>(The default value is DateTime.UtcNow)</remarks>
         /// </summary>
         public static void ResetNow()
         {
-            now = () => DateTime.UtcNow;
+            Now = () => DateTime.UtcNow;
         }
     }
 

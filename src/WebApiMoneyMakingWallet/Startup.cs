@@ -1,97 +1,50 @@
-﻿using System;
+﻿#region Libraries
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IDMONEY.IO.Authorization;
-using IDMONEY.IO.Cryptography;
-using IDMONEY.IO.Infrastructure;
-using IDMONEY.IO.Security;
-using IDMONEY.IO.Transactions;
-using IDMONEY.IO.Users;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IDMONEY.IO.IoC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json; 
+#endregion
 
 namespace IDMONEY.IO
 {
     public class Startup
     {
+        #region Constructor
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
+        } 
+        #endregion
 
-        public IConfiguration Configuration { get; }
+        #region Properties
+        public IConfiguration Configuration { get; } 
+        #endregion
         public void ConfigureServices(IServiceCollection services)
         {
-            var tokenParams = new TokenValidationParameters()
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = false,
-                ValidIssuer = Configuration["JWT:Issuer"],
-                ValidAudience = Configuration["JWT:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:key"]))
-            };
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(jwtconfig =>
-                {
-                    jwtconfig.TokenValidationParameters = tokenParams;
-                });
-
-            services.AddMvc();
+            services.AddBearerAuthentication(Configuration)
+                    .AddWebApi();
 
             services.Add(new ServiceDescriptor(typeof(DataBaseContext), new DataBaseContext(Configuration.GetConnectionString("DefaultConnection"))));
-            services.AddSingleton<ISecurityContext>(new SecurityContext(Configuration["JWT:key"], Configuration["JWT:Issuer"], Configuration["JWT:Audience"]));
-
-            services.AddSingleton<IUserRepository, MySqlUserRepository>();
-            services.AddSingleton<IUserService, UserService>();
-
-            services.AddSingleton<ITransactionRepository, MySqlTransactionRepository>();
-            services.AddSingleton<ITransactionService, TransactionService>();
-
-            services.AddSingleton<IBusinessRepository, MySqlBusinessRepository>();
-            services.AddSingleton<IBusinessService, BusinessService>();
-
-            services.AddSingleton<ITokenGenerator, JwtSecurityTokenGenerator>();
-            services.AddSingleton<IAuthorizationService, AuthorizationService>();
+            RegisterServices(services);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseExceptionHandler()
+                .UseExceptionHandling()
+                .UseAuthentication()
+                .UseMvc();
+        }
 
-            app.UseAuthentication();
-
-            app.UseMvc();
+        private static void RegisterServices(IServiceCollection services)
+        {
+            NativeInjectorBootstrapper.RegisterServices(services);
         }
     }
-
-    /*public class SecurityContext
-    {
-        public static string KEY { get; set; }
-
-        public static string ISSUER { get; set; }
-
-        public static string AUDIENCE { get; set; }
-
-        public SecurityContext(string key, string issuer, string audience)
-        {
-            SecurityContext.KEY = key;
-            SecurityContext.ISSUER = issuer;
-            SecurityContext.AUDIENCE = audience;
-        }
-    }*/
 }

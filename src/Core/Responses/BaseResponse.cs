@@ -8,7 +8,7 @@ namespace IDMONEY.IO.Responses
     {
         public bool IsSuccessful { get; set; }
 
-        public List<Error> Errors { get; set; }
+        public IList<Error> Errors { get; set; }
 
         protected Response()
         {

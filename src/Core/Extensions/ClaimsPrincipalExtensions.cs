@@ -30,7 +30,7 @@ namespace IDMONEY.IO.Security
                 return Convert.ToInt64(claim.Value);
             }
 
-            throw new UserNotFoundException();
+            throw new NotFoundException("User not found");
         }
     }
 }

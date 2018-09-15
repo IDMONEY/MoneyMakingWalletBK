@@ -19,16 +19,19 @@ namespace IDMONEY.IO.Controllers
     public class UserController : Controller
     {
         #region Members
-        private readonly IUserService userService; 
+        private readonly IUserService userService;
         #endregion
 
+        #region Constructor
         public UserController(IUserService userService)
         {
             Ensure.IsNotNull(userService);
 
             this.userService = userService;
         }
+        #endregion
 
+        #region Methods
         [HttpPost]
         public Response CreateUser([FromBody]CreateUserRequest req)
         {
@@ -40,6 +43,7 @@ namespace IDMONEY.IO.Controllers
         public Response GetUser()
         {
             return this.userService.GetUser(HttpContext.User);
-        }
+        } 
+        #endregion
     }
 }

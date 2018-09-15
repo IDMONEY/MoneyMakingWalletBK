@@ -9,11 +9,11 @@ namespace IDMONEY.IO
 {
     public enum ErrorCodes
     {
-        ErrorNotSpecific = 1,
-        UserNotFound = 2,
-        BusinessNotFound = 3,
-        EmailIsRegistred = 4,
-        AmountInvalid = 5,
-        AvailableBalanceIsEnough = 6
+        Unknown = 1,
+        NotFound = 2,
+        NotAuthorized = 3,
+        EmailAlreadyRegistred = 4,
+        InvalidAmount = 5,
+        InsufficientFunds = 6
     }
 }
