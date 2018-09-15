@@ -14,7 +14,7 @@ using IDMONEY.IO.Transactions;
 namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
-    [Route("api/business")]
+    [Route("api/businesses")]
     public class BusinessController : Controller
     {
 
@@ -32,13 +32,12 @@ namespace IDMONEY.IO.Controllers
         #endregion
 
         #region Methods
-        [Route("search")]
         [HttpGet, Authorize]
-        public Response SearchBusiness([FromBody]SearchBusinessRequest req)
+        public Response SearchBusiness(string name)
         {
-            BSBusiness bSEntryData = new BSBusiness(HttpContext.User);
-            return bSEntryData.SearchBusiness(req);
-        } 
+            Ensure.IsNotNullOrEmpty(name);
+            return this.businessService.FindByName(name);
+        }
         #endregion
     }
 }

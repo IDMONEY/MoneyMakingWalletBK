@@ -18,13 +18,18 @@ namespace IDMONEY.IO.Transactions
 
             this.businessRepository = businessRepository;
         }
+
+        public SearchBusinessResponse FindByName(string name)
+        {
+            return this.Get(name);
+        }
         #endregion
 
         #region Methods
         public SearchBusinessResponse Get(string name)
         {
             SearchBusinessResponse response = new SearchBusinessResponse();
-            var businesses = this.businessRepository.Get(name);
+            var businesses = this.businessRepository.FindByName(name);
 
             if (businesses.IsNull())
             {

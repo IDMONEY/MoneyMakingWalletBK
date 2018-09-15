@@ -16,7 +16,7 @@ namespace IDMONEY.IO.Infrastructure
             }
         }
 
-        public IList<Business> Get(string name)
+        public IList<Business> FindByName(string name)
         {
             using (var database = new DABusiness())
             {

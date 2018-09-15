@@ -7,5 +7,6 @@ namespace IDMONEY.IO.Transactions
     public interface IBusinessService
     {
         SearchBusinessResponse Get(string name);
+        SearchBusinessResponse FindByName(string name);
     }
 }
