@@ -9,6 +9,7 @@ namespace IDMONEY.IO.Transactions
 {
     public class Transaction
     {
+        #region Properties
         public long? Id { get; set; }
 
         public int? BusinessId { get; set; }
@@ -30,28 +31,29 @@ namespace IDMONEY.IO.Transactions
         public TransactionStatus Status { get; set; }
 
         public string StatusName { get; set; }
+        #endregion
 
 
+        #region Methods
         public Transaction ChangeStatus(TransactionStatus status)
         {
-            //TODO CHECK IF ENUM IS DEFINED;
+            Ensure.IsEnumDefined<TransactionStatus>(status);
             this.Status = status;
             return this;
         }
 
         public Transaction UpdateAmount(decimal? amount)
         {
-            //TODO CHECK IF ENUM IS DEFINED;
             this.Amount = amount;
             return this;
         }
-        
+
 
         public Transaction SetProcessingDate(DateTime? processingDate)
         {
-            //TODO CHECK IF ENUM IS DEFINED;
             this.ProcessingDate = processingDate;
             return this;
-        }
+        } 
+        #endregion
     }
 }

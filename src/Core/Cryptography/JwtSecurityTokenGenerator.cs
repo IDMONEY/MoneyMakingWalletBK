@@ -13,17 +13,21 @@ namespace IDMONEY.IO.Cryptography
     {
         #region Constants
         private const int MAX_HOURS_TO_BE_EXPIRED = 1;
+        private const string AUTHENTICATION_SCHEME = "Bearer";
         #endregion
 
         #region Members
-        private readonly ISecurityContext securityContext; 
+        private readonly ISecurityContext securityContext;
         #endregion
 
+        #region Constructor
         public JwtSecurityTokenGenerator(ISecurityContext securityContext)
         {
             this.securityContext = securityContext;
         }
+        #endregion
 
+        #region Methods
         public string Generate(string value)
         {
             var claims = new[]
@@ -43,7 +47,8 @@ namespace IDMONEY.IO.Cryptography
                //expires: expiration,
                signingCredentials: creds);
 
-            return string.Format("Bearer {0}", new JwtSecurityTokenHandler().WriteToken(token));
-        }
+            return $"{AUTHENTICATION_SCHEME} {new JwtSecurityTokenHandler().WriteToken(token)}";
+        } 
+        #endregion
     }
 }

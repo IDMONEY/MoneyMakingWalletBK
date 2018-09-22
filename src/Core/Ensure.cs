@@ -117,5 +117,18 @@ namespace IDMONEY.IO
             }
         }
 
+        /// <summary>
+        /// Determines whether the given value is defined in the specific enum.
+        /// </summary>
+        /// <param name="value">Enum's value</param>
+        [DebuggerStepThrough]
+        public static void IsEnumDefined<T>(object value) where T : struct
+        {
+            Type type = typeof(T);
+            if (!Enum.IsDefined(type, value))
+            {
+                throw new ArgumentException($"The {value} is an invalid value for the enum {type}");
+            }
+        }
     }
 }

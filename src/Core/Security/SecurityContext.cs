@@ -11,11 +11,14 @@ namespace IDMONEY.IO.Security
         #region Constructor
         public SecurityContext(string key, string issuer, string audience)
         {
-            //TODO: ENSURE EMPTYS AND NULL
+            Ensure.IsNotNullOrEmpty(key);
+            Ensure.IsNotNullOrEmpty(issuer);
+            Ensure.IsNotNullOrEmpty(audience);
+
             this.Key = key;
             this.Issuer = issuer;
             this.Audience = audience;
-        } 
+        }
         #endregion
 
         #region Properties

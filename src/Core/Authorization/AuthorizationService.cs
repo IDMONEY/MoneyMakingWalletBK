@@ -8,6 +8,7 @@ using IDMONEY.IO.Responses;
 using IDMONEY.IO.Users;
 
 #endregion
+
 namespace IDMONEY.IO.Authorization
 {
     public class AuthorizationService : IAuthorizationService
@@ -16,7 +17,6 @@ namespace IDMONEY.IO.Authorization
         private readonly IUserRepository userRepository;
         private readonly ITokenGenerator tokenGenerator;
         #endregion
-
 
         #region Constructor
         public AuthorizationService(IUserRepository userRepository, ITokenGenerator tokenGenerator)
@@ -56,7 +56,7 @@ namespace IDMONEY.IO.Authorization
                 throw new IDMoneyException(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
             }
             return response;
-        } 
+        }
         #endregion
     }
 }
