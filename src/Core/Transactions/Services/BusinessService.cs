@@ -51,6 +51,7 @@ namespace IDMONEY.IO.Transactions
         {
             SearchBusinessResponse response = new SearchBusinessResponse();
             response.Businesses = action();
+            response.IsSuccessful = true;
             return response;
         } 
         #endregion
