@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc; 
 #endregion
 
-namespace WebApiMoneyMakingWallet.Controllers
+namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
     [Route("api/membership")]

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region Libraries
+using System;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using IDMONEY.IO;
 using IDMONEY.IO.Users;
-using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient; 
+#endregion
 
 namespace IDMONEY.IO.DataAccess
 {
