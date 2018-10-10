@@ -16,7 +16,7 @@ namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
     [Route("api/transactions")]
-    public class TransactionController : Controller
+    public class TransactionController : BaseController
     {
         #region Members
         private readonly ITransactionService transactionService;
@@ -35,6 +35,7 @@ namespace IDMONEY.IO.Controllers
         [HttpPost, Authorize]
         public Response InsertTransaction([FromBody]InsertTransactionRequest request)
         {
+            request.Transaction.UserId = UserId;
             return this.transactionService.Add(request);
         }
 

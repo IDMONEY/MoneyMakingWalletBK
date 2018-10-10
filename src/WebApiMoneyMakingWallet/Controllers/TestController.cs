@@ -7,7 +7,7 @@ namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
     [Route("api/Test")]
-    public class TestController : Controller
+    public class TestController : BaseController
     {
         // GET: api/Test
         [HttpGet]

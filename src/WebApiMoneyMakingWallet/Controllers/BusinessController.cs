@@ -15,7 +15,7 @@ namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
     [Route("api/businesses")]
-    public class BusinessController : Controller
+    public class BusinessController : BaseController
     {
 
         #region Members

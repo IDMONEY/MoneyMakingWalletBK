@@ -16,7 +16,7 @@ namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
     [Route("api/membership")]
-    public class MembershipController : Controller
+    public class MembershipController : BaseController
     {
         #region Members
         private readonly IAuthorizationService authorizationService;

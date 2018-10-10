@@ -16,7 +16,7 @@ namespace IDMONEY.IO.Controllers
 {
     [Produces("application/json")]
     [Route("api/users")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         #region Members
         private readonly IUserService userService;
