@@ -36,7 +36,8 @@ namespace IDMONEY.IO
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseExceptionHandler()
+
+            app.UseExceptionHandler(new ExceptionHandlerOptions { ExceptionHandler = _ => Task.CompletedTask })
                 .UseExceptionHandling()
                 .UseAuthentication()
                 .UseMvc();
