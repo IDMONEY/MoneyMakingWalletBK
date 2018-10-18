@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 #endregion
+
 namespace IDMONEY.IO.Users
 {
     public static class UserExtensions

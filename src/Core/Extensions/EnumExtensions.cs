@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿#region Libraries
+using System;
+using System.Diagnostics; 
+#endregion
 
 namespace IDMONEY.IO
 {

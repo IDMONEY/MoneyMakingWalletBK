@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace IDMONEY.IO.Requests
 {
-    public class CreateUserRequest : Request
+    public class CreateUserRequest : UserRequest
     {
-        public string Email { get; set; }
 
-        public string Password { get; set; }
     }
 }
