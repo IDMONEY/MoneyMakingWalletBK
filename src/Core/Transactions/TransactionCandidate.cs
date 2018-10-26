@@ -19,15 +19,17 @@ namespace IDMONEY.IO.Transactions
         public int? UserId { get; set; }
         public string Description { get; set; }
         public TransactionStatus Status { get; set; }
-        public DateTime? RegistrationDate { get;} 
+        public DateTime? RegistrationDate { get;}
         #endregion
 
+        #region Static Methods
         public static TransactionCandidate Create()
         {
             return new TransactionCandidate(SystemTime.Now())
             {
                 Status = TransactionStatus.Registered
             };
-        }
+        } 
+        #endregion
     }
 }

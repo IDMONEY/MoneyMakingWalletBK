@@ -1,10 +1,9 @@
-﻿using MySql.Data.MySqlClient;
+﻿#region Libraries
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IDMONEY.IO;
-using IDMONEY.IO.Transactions;
+using IDMONEY.IO.Transactions; 
+#endregion
 
 namespace IDMONEY.IO.DataAccess
 {
@@ -25,6 +24,8 @@ namespace IDMONEY.IO.DataAccess
                 {
                     list.Add(new Business()
                     {
+                        AvailableBalance = Convert.ToDecimal(reader["available_balance"]),
+                        BlockedBalance = Convert.ToDecimal(reader["blocked_balance"]),
                         Image = reader["image"].ToString(),
                         Description = reader["description"].ToString(),
                         Name = reader["name"].ToString(),

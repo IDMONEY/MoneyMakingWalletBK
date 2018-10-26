@@ -35,6 +35,7 @@ namespace IDMONEY.IO.Controllers
         #region Methods
         [Route("login")]
         [HttpPut]
+        [HttpPost]
         public Response Login([FromBody]LoginUserRequest request)
         {
             return authorizationService.Authorize(request);

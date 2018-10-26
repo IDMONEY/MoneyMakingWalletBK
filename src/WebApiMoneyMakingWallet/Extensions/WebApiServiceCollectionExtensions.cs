@@ -14,7 +14,18 @@ namespace IDMONEY.IO
         {
             Ensure.IsNotNull(services);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    internalBuilder => internalBuilder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+
             var builder = services.AddMvcCore();
+            services.AddOptions();
+
             builder.AddJsonFormatters();
             builder.AddJsonOptions(opt =>
             {
@@ -24,8 +35,7 @@ namespace IDMONEY.IO
                 opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             });
 
-            builder.AddCors();
-
+            
             return new MvcBuilder(builder.Services, builder.PartManager);
         }
 

@@ -40,6 +40,7 @@ namespace IDMONEY.IO
             app.UseExceptionHandler(new ExceptionHandlerOptions { ExceptionHandler = _ => Task.CompletedTask })
                 .UseExceptionHandling()
                 .UseAuthentication()
+                .UseCors("CorsPolicy")
                 .UseMvc();
         }
 
