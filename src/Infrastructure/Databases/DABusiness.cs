@@ -2,13 +2,30 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using IDMONEY.IO.Transactions; 
+using IDMONEY.IO.Transactions;
+using System.Data;
 #endregion
 
 namespace IDMONEY.IO.DataAccess
 {
     public class DABusiness : DataAccess
     {
+        public long InsertBusiness(Business business)
+        {
+            MySqlCommand cmd = new MySqlCommand("sp_InsertBusiness", Connection);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@p_name", business.Name);
+            cmd.Parameters.AddWithValue("@p_description", business.Description);
+            cmd.Parameters.AddWithValue("@p_image", business.Image);
+            cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int64));
+            cmd.Parameters["@p_id"].Direction = ParameterDirection.Output;
+
+            cmd.ExecuteNonQuery();
+
+            return Convert.ToInt64(cmd.Parameters["@p_id"].Value);
+        }
+
         public List<Business> SearchBusiness(string name)
         {
             MySqlCommand cmd = new MySqlCommand("sp_SearchBusiness", Connection);

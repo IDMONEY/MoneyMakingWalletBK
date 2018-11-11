@@ -85,7 +85,7 @@ namespace IDMONEY.IO.Transactions
 
                 response.Transaction = this.GetTransaction(transactionID);
             }
-            catch (Exception exc)
+            catch (Exception)
             {
 
                 response.IsSuccessful = false;

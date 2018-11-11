@@ -32,5 +32,13 @@ namespace IDMONEY.IO.Infrastructure
                 return database.SearchBusiness(null);
             }
         }
+
+        public long Add(Business business)
+        {
+            using (var database = new DABusiness())
+            {
+                return database.InsertBusiness(business);
+            }
+        }
     }
 }

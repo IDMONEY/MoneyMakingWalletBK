@@ -14,7 +14,7 @@ namespace IDMONEY.IO.Transactions
         #endregion
 
         #region Properties
-        public int? BusinessId { get; set; }
+        public long? BusinessId { get; set; }
         public decimal? Amount { get; set; }
         public int? UserId { get; set; }
         public string Description { get; set; }

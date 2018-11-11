@@ -1,5 +1,5 @@
 ﻿#region Libraries
-using IDMONEY.IO.Transactions; 
+using IDMONEY.IO.Transactions;
 #endregion
 
 namespace IDMONEY.IO.Responses

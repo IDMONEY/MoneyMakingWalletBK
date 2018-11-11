@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using IDMONEY.IO.Exceptions;
+using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 #endregion
 
@@ -19,6 +20,26 @@ namespace IDMONEY.IO.Transactions
             Ensure.IsNotNull(businessRepository);
 
             this.businessRepository = businessRepository;
+        }
+
+        public InsertBusinessResponse Create(CreateBusinessRequest request)
+        {
+            InsertBusinessResponse response = new InsertBusinessResponse();
+
+            var candidateBusiness = new Business()
+            {
+                Name = request.Name,
+                Description = request.Description,
+                Image = request.Image
+            };
+
+            var id = this.businessRepository.Add(candidateBusiness);
+            candidateBusiness.Id = id;
+            response.IsSuccessful = true;
+
+            response.Business = candidateBusiness;
+
+            return response;
         }
 
         public SearchBusinessResponse FindByName(string name)
