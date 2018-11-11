@@ -30,7 +30,7 @@ namespace IDMONEY.IO.Transactions
 
         public TransactionStatus Status { get; set; }
 
-        public string StatusName { get; set; }
+        public string StatusName => this.Status.GetStringValue();
         #endregion
 
 

@@ -1,9 +1,11 @@
-﻿using System;
+﻿#region Libraries
+using System;
 using System.Collections.Generic;
 using System.Data;
 using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Users;
-using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient; 
+#endregion
 
 namespace IDMONEY.IO.DataAccess
 {
@@ -11,8 +13,10 @@ namespace IDMONEY.IO.DataAccess
     {
         public long InsertTransaction(TransactionCandidate candidate)
         {
-            MySqlCommand cmd = new MySqlCommand("sp_InsertTransaction", Connection);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            MySqlCommand cmd = new MySqlCommand("sp_InsertTransaction", Connection)
+            {
+                CommandType = System.Data.CommandType.StoredProcedure
+            };
 
             cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int32));
             cmd.Parameters["@p_id"].Direction = ParameterDirection.Output;
@@ -79,7 +83,7 @@ namespace IDMONEY.IO.DataAccess
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw ex;
+                    throw;
                 }
             }
         }
@@ -107,7 +111,7 @@ namespace IDMONEY.IO.DataAccess
                         ProcessingDate = Convert.IsDBNull(reader["processing_date"]) ? null : (DateTime?)Convert.ToDateTime(reader["processing_date"]),
                         RegistrationDate = Convert.ToDateTime(reader["registration_date"]),
                         Status = (TransactionStatus)Convert.ToInt32(reader["status"]),
-                        StatusName = reader["StatusName"].ToString(),
+                        //StatusName = reader["StatusName"].ToString(),
                         UserId = (int?)Convert.ToInt64(reader["user_id"])
                     });
                 }
@@ -139,7 +143,7 @@ namespace IDMONEY.IO.DataAccess
                         ProcessingDate = Convert.IsDBNull(reader["processing_date"]) ? null : (DateTime?)Convert.ToDateTime(reader["processing_date"]),
                         RegistrationDate = Convert.ToDateTime(reader["registration_date"]),
                         Status = (TransactionStatus)Convert.ToInt32(reader["status"]),
-                        StatusName = reader["StatusName"].ToString(),
+                        //StatusName = reader["StatusName"].ToString(),
                         UserId = (int?)Convert.ToInt64(reader["user_id"])
                     };
                 }
