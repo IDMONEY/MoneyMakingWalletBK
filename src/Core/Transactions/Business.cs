@@ -15,7 +15,7 @@ namespace IDMONEY.IO.Transactions
 
         public string Name { get; set; }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public decimal AvailableBalance { get; set; }
 

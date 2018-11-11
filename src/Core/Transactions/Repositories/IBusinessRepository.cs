@@ -9,6 +9,7 @@ namespace IDMONEY.IO.Transactions
     public interface IBusinessRepository
     {
         Business Get(int id);
+        long Add(Business business);
         IList<Business> FindByName(string name);
         IList<Business> GetAll ();
     }

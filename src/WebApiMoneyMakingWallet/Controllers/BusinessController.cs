@@ -33,6 +33,12 @@ namespace IDMONEY.IO.Controllers
 
         #region Methods
 
+        [HttpPost, Authorize]
+        public Response CreateBusiness([FromBody]CreateBusinessRequest req)
+        {
+            return this.businessService.Create(req);
+        }
+
         [Route("{name:alpha}")]
         [HttpGet, Authorize]
         public Response SearchBusiness(string name)
