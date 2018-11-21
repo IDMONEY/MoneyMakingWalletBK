@@ -40,5 +40,14 @@ namespace IDMONEY.IO.Infrastructure
                 return database.InsertBusiness(business);
             }
         }
+
+        public IList<Business> GetByUser(long userId)
+        {
+            using (var database = new DABusiness())
+            {
+                return database.GetBusinessById(userId);
+            }
+        }
+
     }
 }

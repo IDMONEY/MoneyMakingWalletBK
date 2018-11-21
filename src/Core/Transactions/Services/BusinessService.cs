@@ -1,6 +1,7 @@
 ﻿#region Libraries
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using IDMONEY.IO.Exceptions;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
@@ -64,6 +65,11 @@ namespace IDMONEY.IO.Transactions
         public SearchBusinessResponse GetAll()
         {
             return this.Get(() => this.businessRepository.GetAll());
+        }
+
+        public SearchBusinessResponse GetByUser(ClaimsPrincipal claimsPrincipal)
+        {
+            return this.Get(() => this.businessRepository.GetByUser(claimsPrincipal.GetUserId()));
         }
         #endregion
 

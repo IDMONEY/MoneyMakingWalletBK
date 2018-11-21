@@ -61,6 +61,14 @@ namespace IDMONEY.IO.Controllers
         {
             return this.businessService.GetAll();
         }
+
+
+        [HttpGet, Authorize]
+        [Route("user")]
+        public Response GetByUser()
+        {
+            return this.businessService.GetByUser(HttpContext.User);
+        }
         #endregion
     }
 }

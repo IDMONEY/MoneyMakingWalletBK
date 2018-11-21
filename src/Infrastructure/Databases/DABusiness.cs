@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using IDMONEY.IO.Transactions;
 using System.Data;
+using IDMONEY.IO.Data;
 #endregion
 
 namespace IDMONEY.IO.DataAccess
@@ -81,5 +82,32 @@ namespace IDMONEY.IO.DataAccess
 
             return business;
         }
+
+        public virtual IList<Business> GetBusinessById(long id)
+        {
+            var parameters = DataParameterBuilder.Create(this.GetFactory())
+                                  .AddInParameter("@p_user_id", DbType.Int64, id)
+                                  .Parameters;
+
+            IList<Business> list = new List<Business>();
+            this.ExecuteReader("sp_GetBusinessByUserId", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatBusiness));
+
+            return list;
+        }
+
+        #region Private Methods
+        private Business FormatBusiness(IDataReader reader)
+        {
+            return new Business()
+            {
+                AvailableBalance = Convert.ToDecimal(reader["available_balance"]),
+                BlockedBalance = Convert.ToDecimal(reader["blocked_balance"]),
+                Image = reader["image"].ToString(),
+                Description = reader["description"].ToString(),
+                Name = reader["name"].ToString(),
+                Id = Convert.ToInt32(reader["id"]),
+            };
+        }
+        #endregion
     }
 }

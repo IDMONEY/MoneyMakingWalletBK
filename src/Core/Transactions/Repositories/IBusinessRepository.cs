@@ -12,5 +12,6 @@ namespace IDMONEY.IO.Transactions
         long Add(Business business);
         IList<Business> FindByName(string name);
         IList<Business> GetAll ();
+        IList<Business> GetByUser(long userId);
     }
 }
