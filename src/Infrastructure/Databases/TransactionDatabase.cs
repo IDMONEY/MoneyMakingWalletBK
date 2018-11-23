@@ -7,9 +7,9 @@ using IDMONEY.IO.Users;
 using MySql.Data.MySqlClient; 
 #endregion
 
-namespace IDMONEY.IO.DataAccess
+namespace IDMONEY.IO.Databases
 {
-    public class DATransaction : DataAccess
+    public class TransactionDatabase : RelationalDatabase
     {
         public long InsertTransaction(TransactionCandidate candidate)
         {

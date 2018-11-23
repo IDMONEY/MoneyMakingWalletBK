@@ -5,6 +5,7 @@ using IDMONEY.IO.Cryptography;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Exceptions;
+using System.Threading.Tasks;
 #endregion
 
 namespace IDMONEY.IO.Users
@@ -14,21 +15,25 @@ namespace IDMONEY.IO.Users
         #region Members
         private readonly IUserRepository userRepository;
         private readonly ITokenGenerator tokenGenerator;
+        private readonly INicknameRepository nicknameRepository;
+
         #endregion
 
         #region Constructor
-        public UserService(IUserRepository userRepository, ITokenGenerator tokenGenerator)
+        public UserService(IUserRepository userRepository, ITokenGenerator tokenGenerator, INicknameRepository nicknameRepository)
         {
             Ensure.IsNotNull(userRepository);
             Ensure.IsNotNull(tokenGenerator);
+            Ensure.IsNotNull(nicknameRepository);
 
             this.userRepository = userRepository;
             this.tokenGenerator = tokenGenerator;
+            this.nicknameRepository = nicknameRepository;
         }
         #endregion
 
         #region Methods
-        public CreateUserResponse Create(CreateUserRequest request)
+        public async Task<CreateUserResponse> Create(CreateUserRequest request)
         {
             CreateUserResponse response = new CreateUserResponse();
 
@@ -49,9 +54,13 @@ namespace IDMONEY.IO.Users
                     //Privatekey = privateKey
                 };
 
-                user.AvailableBalance = 0;
-                user.BlockedBalance = 0;
-                user.Id = this.userRepository.Add(user);
+                //TODO: Check if account must be assigned
+                user.Id = await this.userRepository.Add(user);
+
+                if (request.Nickname.IsNotNullOrEmpty())
+                {
+                    await this.nicknameRepository.Create(user, NickName.Create(request.Nickname));
+                }
 
                 response.User = user;
                 response.Token = this.tokenGenerator.Generate(user.Id.ToString());
@@ -68,7 +77,7 @@ namespace IDMONEY.IO.Users
             return response;
         }
 
-        public UserResponse GetUser(ClaimsPrincipal claimsPrincipal)
+        public async Task<UserResponse> GetUser(ClaimsPrincipal claimsPrincipal)
         {
             UserResponse response = new UserResponse();
 

@@ -1,5 +1,5 @@
 ﻿#region Libraries
-using IDMONEY.IO.DataAccess;
+using IDMONEY.IO.Databases;
 using System.Security.Claims;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Requests; 
@@ -17,7 +17,7 @@ namespace IDMONEY.IO.Services
         {
             SearchBusinessResponse res = new SearchBusinessResponse();
 
-            using (DABusiness da = new DABusiness())
+            using (BusinessDatabase da = new BusinessDatabase())
             {
                 res.Businesses = da.SearchBusiness(req.Name);
             }

@@ -1,7 +1,7 @@
 ﻿#region Libraries
 using System;
 using System.Collections.Generic;
-using IDMONEY.IO.DataAccess;
+using IDMONEY.IO.Databases;
 using IDMONEY.IO.Transactions; 
 #endregion
 
@@ -11,7 +11,7 @@ namespace IDMONEY.IO.Infrastructure
     {
         public Business Get(int id)
         {
-            using (var database = new DABusiness())
+            using (var database = new BusinessDatabase())
             {
                 return database.GetBusiness(id);
             }
@@ -19,7 +19,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public IList<Business> FindByName(string name)
         {
-            using (var database = new DABusiness())
+            using (var database = new BusinessDatabase())
             {
                 return database.SearchBusiness(name);
             }
@@ -27,7 +27,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public IList<Business> GetAll()
         {
-            using (var database = new DABusiness())
+            using (var database = new BusinessDatabase())
             {
                 return database.SearchBusiness(null);
             }
@@ -35,7 +35,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public long Add(Business business)
         {
-            using (var database = new DABusiness())
+            using (var database = new BusinessDatabase())
             {
                 return database.InsertBusiness(business);
             }
@@ -43,7 +43,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public IList<Business> GetByUser(long userId)
         {
-            using (var database = new DABusiness())
+            using (var database = new BusinessDatabase())
             {
                 return database.GetBusinessById(userId);
             }

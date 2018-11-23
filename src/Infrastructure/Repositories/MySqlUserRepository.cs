@@ -1,5 +1,6 @@
 ﻿#region Libraries
-using IDMONEY.IO.DataAccess;
+using System.Threading.Tasks;
+using IDMONEY.IO.Databases;
 using IDMONEY.IO.Users; 
 #endregion
 
@@ -8,17 +9,17 @@ namespace IDMONEY.IO.Infrastructure
     public class MySqlUserRepository : IUserRepository
     {
         //TODO: How to inject the database
-        public long Add(User user)
+        public async Task<long> Add(User user)
         {
-            using (var database = new DAUser())
+            using (var database = new UserDatabase())
             {
-                return database.InsertUser(user);
+                return await database.InsertUser(user);
             }
         }
 
         public User GetByCredentials(string email, string password)
         {
-            using (var database = new DAUser())
+            using (var database = new UserDatabase())
             {
                 return database.LoginUser(email, password);
             }
@@ -26,7 +27,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public User GetByEmail(string email)
         {
-            using (var database = new DAUser())
+            using (var database = new UserDatabase())
             {
                 return database.GetUser(email);
             }
@@ -34,7 +35,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public User GetById(long id)
         {
-            using (var database = new DAUser())
+            using (var database = new UserDatabase())
             {
                 return database.GetUser(id);
             }

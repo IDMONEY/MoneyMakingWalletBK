@@ -60,7 +60,7 @@ namespace IDMONEY.IO.Transactions
                 var user = this.userRepository.GetById(request.Transaction.UserId.Value);
 
                 //TODO: REDUCE THE NUMBER OF DATABASE ACCESS
-                if (user.AvailableBalance >= request.Transaction.Amount)
+                if (user.Account.Balance.Available >= request.Transaction.Amount)
                 {
                     var transaction = this.GetTransaction(transactionID);
                     transaction.ChangeStatus(TransactionStatus.Processed)

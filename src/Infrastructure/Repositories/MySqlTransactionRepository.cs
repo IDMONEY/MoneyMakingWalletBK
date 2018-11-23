@@ -1,6 +1,6 @@
 ﻿#region Libraries
 using System.Collections.Generic;
-using IDMONEY.IO.DataAccess;
+using IDMONEY.IO.Databases;
 using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Users;
 #endregion
@@ -11,7 +11,7 @@ namespace IDMONEY.IO.Infrastructure
     {
         public long Add(TransactionCandidate transation)
         {
-            using (var database = new DATransaction())
+            using (var database = new TransactionDatabase())
             {
                 return database.InsertTransaction(transation);
             }
@@ -19,7 +19,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public Transaction Get(long? transactionId)
         {
-            using (var database = new DATransaction())
+            using (var database = new TransactionDatabase())
             {
                 return database.GetTransaction(transactionId);
             }
@@ -27,7 +27,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public IList<Transaction> GetUserTransactions(long userId)
         {
-            using (var database = new DATransaction())
+            using (var database = new TransactionDatabase())
             {
                 return database.SearchTransactionByUser(userId);
             }
@@ -35,7 +35,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public void Update(Transaction transaction)
         {
-            using (var database = new DATransaction())
+            using (var database = new TransactionDatabase())
             {
                 database.UpdateTransaction(transaction);
             }
@@ -43,7 +43,7 @@ namespace IDMONEY.IO.Infrastructure
 
         public void Update(Transaction transaction, User user, Business business)
         {
-            using (var database = new DATransaction())
+            using (var database = new TransactionDatabase())
             {
                 database.UpdateTransaction(transaction, business, user);
             }

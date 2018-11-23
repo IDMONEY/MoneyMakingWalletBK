@@ -1,5 +1,5 @@
 ﻿#region Libraries
-using IDMONEY.IO.DataAccess;
+using IDMONEY.IO.Databases;
 using IDMONEY.IO.Users;
 using System;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace IDMONEY.IO.Services
 
             long userId = Convert.ToInt64(this.ClaimsPrincipal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti).Value);
 
-            using (DAUser daUser = new DAUser())
+            using (UserDatabase daUser = new UserDatabase())
             {
                 User = daUser.GetUser(userId);
             }

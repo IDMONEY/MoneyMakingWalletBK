@@ -23,6 +23,8 @@ namespace IDMONEY.IO.IoC
             services.AddSingleton<IBusinessRepository, MySqlBusinessRepository>();
             services.AddSingleton<IBusinessService, BusinessService>();
 
+            services.AddSingleton<INicknameRepository, MySqlNicknameRepository>();
+
             services.AddSingleton<ITokenGenerator, JwtSecurityTokenGenerator>();
             services.AddSingleton<IAuthorizationService, AuthorizationService>();
         }

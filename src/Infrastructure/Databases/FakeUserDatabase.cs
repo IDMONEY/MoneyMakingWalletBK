@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using IDMONEY.IO.Users;
+﻿#region Libraries
+using System;
+using IDMONEY.IO.Accounts;
+using IDMONEY.IO.Users; 
+#endregion
 
-namespace IDMONEY.IO.DataAccess
+namespace IDMONEY.IO.Databases
 {
-    public class FakeUserDatabase : DataAccess
+    public class FakeUserDatabase : RelationalDatabase
     {
         Random random = new Random();
 
@@ -36,9 +37,18 @@ namespace IDMONEY.IO.DataAccess
             {
                 Id = Int64.MaxValue,
                 Email = "test@test.com",
-                Address = "1x454545aikauajzafq2a6aya1q9a3a",
-                AvailableBalance = available,
-                BlockedBalance = random.Next(available, 50000),
+                Account = new Account()
+                {
+                    Id = Int64.MaxValue,
+                    Address = "1x454545aikauajzafq2a6aya1q9a3a",
+                    Type = AccountType.Personal,
+                    Balance = new Balance()
+                    {
+                        Available = available,
+                        Blocked = random.Next(1000, available),
+                    }
+                },
+                
                 Password = "p$23Zsds",
                 Privatekey = "AxT1a56"
             };

@@ -6,13 +6,13 @@ using System.Data.Common;
 using MySql.Data.MySqlClient;
 #endregion
 
-namespace IDMONEY.IO.DataAccess
+namespace IDMONEY.IO.Databases
 {
-    public abstract class DataAccess : IDisposable
+    public abstract class RelationalDatabase : IDisposable
     {
         public MySqlConnection Connection { get; set; }
 
-        public DataAccess()
+        public RelationalDatabase()
         {
             Connection = new MySqlConnection()
             {
