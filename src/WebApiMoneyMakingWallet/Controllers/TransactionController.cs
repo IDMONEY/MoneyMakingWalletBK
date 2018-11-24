@@ -33,16 +33,17 @@ namespace IDMONEY.IO.Controllers
 
         #region Methods
         [HttpPost, Authorize]
-        public Response InsertTransaction([FromBody]InsertTransactionRequest request)
+        public async Task<Response> InsertTransaction([FromBody]InsertTransactionRequest request)
         {
             request.Transaction.UserId = UserId;
-            return this.transactionService.Add(request);
+
+            return await this.transactionService.AddAsync(request);
         }
 
         [HttpGet, Authorize]
-        public SearchTransactionResponse SearchTransactionByUser()
+        public async Task<SearchTransactionResponse> SearchTransactionByUser()
         {
-            return this.transactionService.GetUserTransactions(HttpContext.User);
+            return await this.transactionService.GetUserTransactionsAsync(HttpContext.User);
         }
 
         //TODO: FindByStatus

@@ -35,14 +35,14 @@ namespace IDMONEY.IO.Controllers
         [HttpPost]
         public async Task<Response> CreateUser([FromBody]CreateUserRequest req)
         {
-            return await this.userService.Create(req);
+            return await this.userService.CreateAsync(req);
         }
 
 
         [HttpGet, Authorize]
         public async Task<Response> GetUser()
         {
-            return await this.userService.GetUser(HttpContext.User);
+            return await this.userService.GetUserAsync(HttpContext.User);
         } 
         #endregion
     }

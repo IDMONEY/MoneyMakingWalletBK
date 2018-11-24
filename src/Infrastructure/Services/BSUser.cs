@@ -83,7 +83,7 @@ namespace IDMONEY.IO.Services
             UserResponse res = new UserResponse();
             using (UserDatabase daUser = new UserDatabase())
             {
-                res.User = daUser.GetUser(User.Id);
+                res.User = daUser.GetUserAsync(User.Id);
             }
             res.IsSuccessful = true;
             return res;
@@ -98,7 +98,7 @@ namespace IDMONEY.IO.Services
 
                 using (UserDatabase daUser = new UserDatabase())
                 {
-                    user = daUser.LoginUser(req.Email, $"{req.Email}:{req.Password}".GenerateSHA512());
+                    user = daUser.LoginUserAsync(req.Email, $"{req.Email}:{req.Password}".GenerateSHA512());
       
                 }
 

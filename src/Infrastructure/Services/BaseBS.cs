@@ -27,7 +27,7 @@ namespace IDMONEY.IO.Services
 
             using (UserDatabase daUser = new UserDatabase())
             {
-                User = daUser.GetUser(userId);
+                User = daUser.GetUserAsync(userId).Result;
             }
         }
 

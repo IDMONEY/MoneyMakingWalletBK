@@ -1,6 +1,7 @@
 ﻿#region Libraries
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using IDMONEY.IO.Databases;
 using IDMONEY.IO.Transactions; 
 #endregion
@@ -9,43 +10,43 @@ namespace IDMONEY.IO.Infrastructure
 {
     public class MySqlBusinessRepository : IBusinessRepository
     {
-        public Business Get(int id)
+        public async Task<Business> GetAsync(int id)
         {
             using (var database = new BusinessDatabase())
             {
-                return database.GetBusiness(id);
+                return await database.GetBusinessAsync(id);
             }
         }
 
-        public IList<Business> FindByName(string name)
+        public async Task<IList<Business>> FindByNameAsync(string name)
         {
             using (var database = new BusinessDatabase())
             {
-                return database.SearchBusiness(name);
+                return await database.SearchBusinessAsync(name);
             }
         }
 
-        public IList<Business> GetAll()
+        public async Task<IList<Business>> GetAllAsync()
         {
             using (var database = new BusinessDatabase())
             {
-                return database.SearchBusiness(null);
+                return await database.SearchBusinessAsync(null);
             }
         }
 
-        public long Add(Business business)
+        public async Task<long> AddAsync(Business business)
         {
             using (var database = new BusinessDatabase())
             {
-                return database.InsertBusiness(business);
+                return await database.InsertBusinessAsync(business);
             }
         }
 
-        public IList<Business> GetByUser(long userId)
+        public async Task<IList<Business>> GetByUserAsync(long userId)
         {
             using (var database = new BusinessDatabase())
             {
-                return database.GetBusinessById(userId);
+                return await database.GetBusinessByIdAsync(userId);
             }
         }
 

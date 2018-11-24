@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Users;
 using MySql.Data.MySqlClient; 
@@ -11,7 +12,7 @@ namespace IDMONEY.IO.Databases
 {
     public class TransactionDatabase : RelationalDatabase
     {
-        public long InsertTransaction(TransactionCandidate candidate)
+        public async Task<long> InsertTransactionAsync(TransactionCandidate candidate)
         {
             MySqlCommand cmd = new MySqlCommand("sp_InsertTransaction", Connection)
             {
@@ -27,20 +28,20 @@ namespace IDMONEY.IO.Databases
             cmd.Parameters.AddWithValue("@p_description", candidate.Description);
             cmd.Parameters.AddWithValue("@p_status", candidate.Status);
 
-            cmd.ExecuteNonQuery();
+            await cmd.ExecuteNonQueryAsync();
 
             return Convert.ToInt64(cmd.Parameters["@p_id"].Value);
         }
 
-        public void UpdateTransaction(Transaction transaction, Business business = null, User user = null)
+        public async Task<bool> UpdateTransactionAsync(Transaction transaction, Business business = null, User user = null)
         {
-            this.UpdateTransaction(transaction.Id, transaction.Status, transaction.ProcessingDate.Value, transaction.Amount, business, user);
+            return await this.UpdateTransactionAsync(transaction.Id, transaction.Status, transaction.ProcessingDate.Value, transaction.Amount, business, user);
         }
 
-        public void UpdateTransaction(long? transactionId, TransactionStatus status, DateTime processingDate,
+        public async Task<bool> UpdateTransactionAsync(long? transactionId, TransactionStatus status, DateTime processingDate,
             decimal? amount = null, Business business = null, User user = null)
         {
-            using (MySqlTransaction transaction = Connection.BeginTransaction())
+            using (MySqlTransaction transaction = await Connection.BeginTransactionAsync())
             {
                 try
                 {
@@ -51,7 +52,7 @@ namespace IDMONEY.IO.Databases
                     cmd.Parameters.AddWithValue("@p_processing_date", processingDate);
                     cmd.Parameters.AddWithValue("@p_status", (int)status);
 
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     if (amount.IsNotNull())
                     {
@@ -64,7 +65,7 @@ namespace IDMONEY.IO.Databases
                         cmd.Parameters.AddWithValue("@p_isSum", false);
                         cmd.Parameters.AddWithValue("@p_userId", user.Id);
 
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
 
                         cmd = new MySqlCommand("sp_UpdateBalanceBusiness", Connection);
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -75,7 +76,7 @@ namespace IDMONEY.IO.Databases
                         cmd.Parameters.AddWithValue("@p_isSum", true);
                         cmd.Parameters.AddWithValue("@p_businessId", business.Id);
 
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
                     }
 
                     transaction.Commit();
@@ -86,9 +87,10 @@ namespace IDMONEY.IO.Databases
                     throw;
                 }
             }
+            return await Task.FromResult(true);
         }
 
-        public List<Transaction> SearchTransactionByUser(long userId)
+        public async Task<List<Transaction>> SearchTransactionByUserAsync(long userId)
         {
             MySqlCommand cmd = new MySqlCommand("sp_SearchTransactionByUser", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -96,7 +98,7 @@ namespace IDMONEY.IO.Databases
             cmd.Parameters.AddWithValue("@p_user_id", userId);
 
             List<Transaction> list = new List<Transaction>();
-            using (MySqlDataReader reader = cmd.ExecuteReader())
+            using (IDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -120,7 +122,7 @@ namespace IDMONEY.IO.Databases
             return list;
         }
 
-        public Transaction GetTransaction(long? transactionId)
+        public async Task<Transaction> GetTransactionAsync(long? transactionId)
         {
             MySqlCommand cmd = new MySqlCommand("sp_GetTransaction", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -128,7 +130,7 @@ namespace IDMONEY.IO.Databases
             cmd.Parameters.AddWithValue("@p_id", transactionId);
 
             Transaction transaction = null;
-            using (MySqlDataReader reader = cmd.ExecuteReader())
+            using (IDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 if (reader.Read())
                 {

@@ -9,7 +9,7 @@ namespace IDMONEY.IO.Users
 {
     public interface IUserService
     {
-        Task<CreateUserResponse> Create(CreateUserRequest request);
-        Task<UserResponse> GetUser(ClaimsPrincipal claimsPrincipal);
+        Task<CreateUserResponse> CreateAsync(CreateUserRequest request);
+        Task<UserResponse> GetUserAsync(ClaimsPrincipal claimsPrincipal);
     }
 }

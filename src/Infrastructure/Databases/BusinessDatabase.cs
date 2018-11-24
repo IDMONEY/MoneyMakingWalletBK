@@ -6,13 +6,14 @@ using IDMONEY.IO.Transactions;
 using System.Data;
 using IDMONEY.IO.Data;
 using IDMONEY.IO.Accounts;
+using System.Threading.Tasks;
 #endregion
 
 namespace IDMONEY.IO.Databases
 {
-    public class BusinessDatabase : RelationalDatabase
+    public class BusinessDatabase : RelationalDatabaseAsync
     {
-        public long InsertBusiness(Business business)
+        public virtual async Task<long> InsertBusinessAsync(Business business)
         {
             MySqlCommand cmd = new MySqlCommand("sp_InsertBusiness", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -23,12 +24,12 @@ namespace IDMONEY.IO.Databases
             cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int64));
             cmd.Parameters["@p_id"].Direction = ParameterDirection.Output;
 
-            cmd.ExecuteNonQuery();
+            await cmd.ExecuteNonQueryAsync();
 
             return Convert.ToInt64(cmd.Parameters["@p_id"].Value);
         }
 
-        public IList<Business> SearchBusiness(string name)
+        public virtual async Task<IList<Business>> SearchBusinessAsync(string name)
         {
 
             var parameters = DataParameterBuilder.Create(this.GetFactory())
@@ -36,12 +37,12 @@ namespace IDMONEY.IO.Databases
                       .Parameters;
 
             IList<Business> list = new List<Business>();
-            this.ExecuteReader("sp_SearchBusiness", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatBusiness));
+            await this.ExecuteReaderAsync("sp_SearchBusiness", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatBusiness));
             return list;
 
         }
 
-        public Business GetBusiness(int businessId)
+        public virtual async Task<Business> GetBusinessAsync(int businessId)
         {
           
 
@@ -49,19 +50,19 @@ namespace IDMONEY.IO.Databases
                                   .AddInParameter("@p_businessId", DbType.Int64, businessId)
                                   .Parameters;
 
-            Business business = null;
-            this.ExecuteReader("sp_GetBusiness", CommandType.StoredProcedure, parameters, (reader) => this.MapEntity(reader, ref business, this.FormatBusiness));
+            Business business = default(Business);
+            await this.ExecuteReaderAsync("sp_GetBusiness", CommandType.StoredProcedure, parameters, (reader) => this.MapEntity(reader, ref business, this.FormatBusiness));
             return business;
         }
 
-        public virtual IList<Business> GetBusinessById(long id)
+        public virtual async Task<IList<Business>> GetBusinessByIdAsync(long id)
         {
             var parameters = DataParameterBuilder.Create(this.GetFactory())
                                   .AddInParameter("@p_user_id", DbType.Int64, id)
                                   .Parameters;
 
             IList<Business> list = new List<Business>();
-            this.ExecuteReader("sp_GetBusinessByUserId", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatBusiness));
+            await this.ExecuteReaderAsync("sp_GetBusinessByUserId", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatBusiness));
             return list;
         }
 

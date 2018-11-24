@@ -46,11 +46,11 @@ namespace IDMONEY.IO.Databases
                     {
                         Available = available,
                         Blocked = random.Next(1000, available),
-                    }
+                    },
+                    PrivateKey = "AxT1a56"
                 },
                 
-                Password = "p$23Zsds",
-                Privatekey = "AxT1a56"
+                Password = "p$23Zsds"
             };
 
         }

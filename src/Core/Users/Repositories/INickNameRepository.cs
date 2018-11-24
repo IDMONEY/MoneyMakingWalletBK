@@ -6,6 +6,7 @@ namespace IDMONEY.IO.Users
 {
     public interface INicknameRepository
     {
-        Task<bool> Create(User user, NickName nickName);
+        Task<bool> AddAsync(User user, NickName nickName);
+        Task<string> GetAByUserAsync(User user);
     }
 }

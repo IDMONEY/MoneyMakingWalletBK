@@ -8,9 +8,10 @@ namespace IDMONEY.IO.Users
 {
     public interface IUserRepository
     {
-        Task<long> Add(User user);
-        User GetById(long id);
-        User GetByCredentials(string email, string password);
-        User GetByEmail(string email);
+        Task<long> AddAsync(User user);
+        Task<User> GetByIdAsync(long id);
+        Task<User> GetByCredentialsAsync(string email, string password);
+        Task<User> GetByEmailAsync(string email);
+        Task<User> GetByNicknameAsync(string nickname);
     }
 }

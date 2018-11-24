@@ -3,15 +3,16 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 using IDMONEY.IO.Accounts;
+using IDMONEY.IO.Data;
 using IDMONEY.IO.Users;
 using MySql.Data.MySqlClient; 
 #endregion
 
 namespace IDMONEY.IO.Databases
 {
-    public class UserDatabase : RelationalDatabase
+    public class UserDatabase : RelationalDatabaseAsync
     {
-        public async Task<long> InsertUser(User user)
+        public async Task<long> InsertUserAsync(User user)
         {
             MySqlCommand cmd = new MySqlCommand("sp_InsertUser", Connection);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -30,66 +31,59 @@ namespace IDMONEY.IO.Databases
             return Convert.ToInt64(cmd.Parameters["@p_id"].Value);
         }
 
-        public User GetUser(long userId)
+        public async Task<User> GetUserAsync(long userId)
         {
-            return GetUser(null, userId);
+            return await GetUserAsync(null, userId);
         }
 
-        public User LoginUser(string email, string password)
+        public async Task<User> GetByNicknameAsync(string nickname)
         {
-            MySqlCommand cmd = new MySqlCommand("sp_LoginUser", Connection);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            var parameters = DataParameterBuilder.Create(this.GetFactory())
+                      .AddInParameter("@p_nickname", DbType.String, nickname)
+                      .Parameters;
 
-            cmd.Parameters.AddWithValue("@p_email", email);
-            cmd.Parameters.AddWithValue("@p_password", password);
-
-            User user = null;
-
-            using (MySqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    user = new User()
-                    {
-                        Email = reader["email"].ToString(),
-                        Id = Convert.ToInt64(reader["user_id"])
-                    };
-                }
-            }
-        
+            User user = default(User);
+            await this.ExecuteReaderAsync("sp_GetUserByNickname", CommandType.StoredProcedure, parameters, (reader) => this.MapEntity(reader, ref user, this.FormatUser));
             return user;
         }
 
-        public User GetUser(string email)
+        public async Task<User> LoginUserAsync(string email, string password)
         {
-            return GetUser(email, null);
+            var parameters = DataParameterBuilder.Create(this.GetFactory())
+                                 .AddInParameter("@p_email", DbType.String, email)
+                                 .AddInParameter("@p_password", DbType.String, password)
+                                 .Parameters;
+
+            User user = default(User);
+            await this.ExecuteReaderAsync("sp_LoginUser", CommandType.StoredProcedure, parameters, (reader) => this.MapEntity(reader, ref user, this.FormatUser));
+            return user;
         }
 
-        private User GetUser(string email, long? userId)
+        public  async Task<User> GetUserAsync(string email)
         {
-            MySqlCommand cmd = new MySqlCommand("sp_GetUser", Connection);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            return await GetUserAsync(email, null);
+        }
 
-            cmd.Parameters.AddWithValue("@p_email", email);
-            cmd.Parameters.AddWithValue("@p_user_id", userId);
+        private async Task<User> GetUserAsync(string email, long? userId)
+        {
+            var parameters = DataParameterBuilder.Create(this.GetFactory())
+                                  .AddInParameter("@p_email", DbType.String, email)
+                                  .AddInParameter("@p_user_id", DbType.Int64, userId)
+                                  .Parameters;
 
-            User user = null;
-            using (MySqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    user = new User()
-                    {
-                        Email = reader["email"].ToString(),
-                        Privatekey = reader["private_key"].ToString(),
-                        Id = Convert.ToInt64(reader["user_id"]),
-                        Account = this.FormatAccount(reader)
-                    };
-                }
-            }
-
-
+            User user = default(User);
+            await this.ExecuteReaderAsync("sp_GetUser", CommandType.StoredProcedure, parameters, (reader) => this.MapEntity(reader, ref user, this.FormatUser));
             return user;
+        }
+
+        private User FormatUser(IDataReader reader)
+        {
+            return new User()
+            {
+                Email = reader.FieldOrDefault<string>("email"),
+                Id = reader.FieldOrDefault<long>("user_id"),
+                Account = this.FormatAccount(reader)
+            };
         }
 
 
@@ -98,9 +92,9 @@ namespace IDMONEY.IO.Databases
         {
             return new Account()
             {
-                Id = Convert.ToInt32(reader["account_id"]),
+                Id = reader.FieldOrDefault<long>("account_id"),
                 Type = AccountType.Business,
-                Address = reader["address"].ToString(),
+                Address = reader.FieldOrDefault<string>("address"),
                 Balance = this.FormatBalance(reader)
             };
         }
@@ -109,10 +103,9 @@ namespace IDMONEY.IO.Databases
         {
             return new Balance()
             {
-                Available = Convert.ToDecimal(reader["available_balance"]),
-                Blocked = Convert.ToDecimal(reader["blocked_balance"]),
+                Available = reader.FieldOrDefault<decimal>("available_balance"),
+                Blocked = reader.FieldOrDefault<decimal>("blocked_balance"),
             };
-
         }
     }
 }

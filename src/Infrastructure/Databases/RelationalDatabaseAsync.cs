@@ -3,47 +3,48 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 #endregion
 
 namespace IDMONEY.IO.Databases
 {
-    public abstract class RelationalDatabase : IDisposable
+    public abstract class RelationalDatabaseAsync : IDisposable
     {
         public MySqlConnection Connection { get; set; }
 
-        public RelationalDatabase()
+        public RelationalDatabaseAsync()
         {
             Connection = new MySqlConnection()
             {
                 ConnectionString = DataBaseContext.CONNECTION_STRING
             };
-            Connection.Open();
+            Connection.OpenAsync();
 
         }
 
-        public IDataReader ExecuteQuery(string stringQuery)
+        public async Task<IDataReader> ExecuteQueryAsync(string stringQuery)
         {
-            MySqlDataReader reader = null;
+            IDataReader reader = default(IDataReader);
             using (MySqlCommand command = Connection.CreateCommand())
             {
                 command.CommandText = stringQuery;
-                reader = command.ExecuteReader();
+                reader = await command.ExecuteReaderAsync();
             }
 
             return reader;
         }
 
-        public void ExecuteNonQuery(string stringQuery)
+        public async Task<int> ExecuteNonQueryAsync(string stringQuery)
         {
             using (MySqlCommand command = Connection.CreateCommand())
             {
                 command.CommandText = stringQuery;
-                command.ExecuteNonQuery();
+                return await command.ExecuteNonQueryAsync();
             }
         }
 
-        public long ExecuteQuery(string stringQuery, List<ParameterSchema> lstParameters)
+        public async Task<long> ExecuteQueryAsync(string stringQuery, List<ParameterSchema> lstParameters)
         {
             long idInsert = 0;
             using (MySqlCommand command = Connection.CreateCommand())
@@ -55,7 +56,7 @@ namespace IDMONEY.IO.Databases
 
                 command.CommandText = stringQuery;
 
-                if (command.ExecuteNonQuery() > 0)
+                if (await command.ExecuteNonQueryAsync() > 0)
                 {
                     idInsert = command.LastInsertedId;
                 }
@@ -63,29 +64,31 @@ namespace IDMONEY.IO.Databases
 
             return idInsert;
         }
-        public virtual void ExecuteReader(string commandText, CommandType commandType, IEnumerable<IDataParameter> parameters, Action<IDataReader> action)
+        public virtual async Task<bool> ExecuteReaderAsync(string commandText, CommandType commandType, IEnumerable<IDataParameter> parameters, Action<IDataReader> action)
         {
-            this.Execute<bool>(commandText, commandType, parameters,
-                                (command) =>
+            await this.ExecuteAsync<bool>(commandText, commandType, parameters,
+                                async (command) =>
                                 {
-                                    IDataReader reader = command.ExecuteReader();
+                                    IDataReader reader = await command.ExecuteReaderAsync();
 
                                     action(reader);
                                     if (!reader.IsClosed)
                                     {
                                         reader.Close();
                                     }
-                                    return true;
+                                    return await Task.FromResult(true);
                                 });
+
+            return await Task.FromResult(true);
         }
 
-        protected virtual TResult Execute<TResult>(string commandText, CommandType commandType, IEnumerable<IDataParameter> parameters, Func<IDbCommand, TResult> executor)
+        protected virtual async Task<TResult> ExecuteAsync<TResult>(string commandText, CommandType commandType, IEnumerable<IDataParameter> parameters, Func<DbCommand, Task<TResult>> executor)
         {
             var command = this.CreateCommand(commandText, commandType, parameters, this.Connection);
-            return executor(command);
+            return await executor(command);
         }
 
-        protected virtual IDbCommand CreateCommand(string commandText, CommandType commandType, IEnumerable<IDataParameter> parameters, DbConnection connection)
+        protected virtual DbCommand CreateCommand(string commandText, CommandType commandType, IEnumerable<IDataParameter> parameters, DbConnection connection)
         {
             return connection.CreateCommand(commandText, commandType, parameters);
         }

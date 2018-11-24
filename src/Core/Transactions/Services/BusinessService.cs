@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using IDMONEY.IO.Exceptions;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
@@ -23,7 +24,7 @@ namespace IDMONEY.IO.Transactions
             this.businessRepository = businessRepository;
         }
 
-        public InsertBusinessResponse Create(CreateBusinessRequest request)
+        public async Task<InsertBusinessResponse> CreateAsync(CreateBusinessRequest request)
         {
             InsertBusinessResponse response = new InsertBusinessResponse();
 
@@ -34,7 +35,7 @@ namespace IDMONEY.IO.Transactions
                 Image = request.Image
             };
 
-            var id = this.businessRepository.Add(candidateBusiness);
+            var id = await this.businessRepository.AddAsync(candidateBusiness);
             candidateBusiness.Id = id;
             response.IsSuccessful = true;
 
@@ -43,14 +44,14 @@ namespace IDMONEY.IO.Transactions
             return response;
         }
 
-        public SearchBusinessResponse FindByName(string name)
+        public async Task<SearchBusinessResponse> FindByNameAsync(string name)
         {
-            return this.Get(() => this.businessRepository.FindByName(name));
+            return await this.Get(() => this.businessRepository.FindByNameAsync(name));
         }
 
-        public BusinessResponse Get(int id)
+        public async Task<BusinessResponse> GetAsync(int id)
         {
-            var business = this.businessRepository.Get(id);
+            var business = await this.businessRepository.GetAsync(id);
 
             if (business.IsNull())
             {
@@ -62,25 +63,25 @@ namespace IDMONEY.IO.Transactions
             };
         }
 
-        public SearchBusinessResponse GetAll()
+        public async Task< SearchBusinessResponse> GetAllAsync()
         {
-            return this.Get(() => this.businessRepository.GetAll());
+            return await this.Get(() => this.businessRepository.GetAllAsync());
         }
 
-        public SearchBusinessResponse GetByUser(ClaimsPrincipal claimsPrincipal)
+        public async Task<SearchBusinessResponse> GetByUserAsync(ClaimsPrincipal claimsPrincipal)
         {
-            return this.Get(() => this.businessRepository.GetByUser(claimsPrincipal.GetUserId()));
+            return await this.Get(() => this.businessRepository.GetByUserAsync(claimsPrincipal.GetUserId()));
         }
         #endregion
 
         #region Methods
-        private SearchBusinessResponse Get(Func<IList<Business>> action)
+        private async Task<SearchBusinessResponse> Get(Func<Task<IList<Business>>> action)
         {
             SearchBusinessResponse response = new SearchBusinessResponse();
-            response.Businesses = action();
+            response.Businesses = await action();
             response.IsSuccessful = true;
             return response;
-        } 
+        }
         #endregion
     }
 }

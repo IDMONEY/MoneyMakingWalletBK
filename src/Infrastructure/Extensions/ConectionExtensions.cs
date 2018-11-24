@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq; 
+using System.Data.Common;
+using System.Linq;
+using MySql.Data.MySqlClient;
 #endregion
 
 namespace IDMONEY.IO
@@ -11,9 +13,9 @@ namespace IDMONEY.IO
     {
         #region Methods
 
-        public static IDbCommand CreateCommand(this IDbConnection connection, string commandText, CommandType commandType, IEnumerable<IDataParameter> parameters)
+        public static DbCommand CreateCommand(this DbConnection connection, string commandText, CommandType commandType, IEnumerable<IDataParameter> parameters)
         {
-            IDbCommand command = connection.CreateCommand();
+            DbCommand command = connection.CreateCommand();
             command.Connection = connection;
             command.CommandText = commandText;
             command.CommandType = commandType;

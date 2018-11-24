@@ -5,6 +5,7 @@ using IDMONEY.IO.Security;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Users;
+using System.Threading.Tasks;
 #endregion
 
 namespace IDMONEY.IO.Transactions
@@ -32,10 +33,9 @@ namespace IDMONEY.IO.Transactions
         #endregion
 
         #region Methods
-        public InsertTransactionResponse Add(InsertTransactionRequest request)
+        public async Task<InsertTransactionResponse> AddAsync(InsertTransactionRequest request)
         {
             InsertTransactionResponse response = new InsertTransactionResponse();
-            response.IsSuccessful = true;
 
             try
             {
@@ -46,7 +46,7 @@ namespace IDMONEY.IO.Transactions
                     return response;
                 }
 
-                var business = this.businessRepository.Get(request.Transaction.BusinessId.Value);
+                var business = await this.businessRepository.GetAsync(request.Transaction.BusinessId.Value);
 
                 if (business.IsNull())
                 {
@@ -55,35 +55,35 @@ namespace IDMONEY.IO.Transactions
                     return response;
                 }
 
-                var transactionID = this.transactionRepository.Add(CreateTransaction(request, business));
+                var transactionID = await this.transactionRepository.AddAsync(CreateTransaction(request, business));
 
-                var user = this.userRepository.GetById(request.Transaction.UserId.Value);
+                var user = await this.userRepository.GetByIdAsync(request.Transaction.UserId.Value);
 
                 //TODO: REDUCE THE NUMBER OF DATABASE ACCESS
                 if (user.Account.Balance.Available >= request.Transaction.Amount)
                 {
-                    var transaction = this.GetTransaction(transactionID);
+                    var transaction = await this.GetTransactionAsync(transactionID);
                     transaction.ChangeStatus(TransactionStatus.Processed)
                                .UpdateAmount(request.Transaction.Amount)
                                .SetProcessingDate(SystemTime.Now());
 
-                    this.transactionRepository.Update(transaction, user, business);
+                    await  this.transactionRepository.UpdateAsync(transaction, user, business);
                 }
                 else
                 {
-                    var transaction = this.GetTransaction(transactionID);
+                    var transaction = await this.GetTransactionAsync(transactionID);
                     transaction.ChangeStatus(TransactionStatus.Rejected)
                                .UpdateAmount(null)
                                .SetProcessingDate(SystemTime.Now());
 
-                    this.transactionRepository.Update(transaction);
+                    await this.transactionRepository.UpdateAsync(transaction);
 
                     response.IsSuccessful = false;
                     response.Errors.Add(new Error() { Code = ((int)ErrorCodes.InsufficientFunds).ToString(), Message = "The available balance is not enough to make the transaction" });
                     return response;
                 }
 
-                response.Transaction = this.GetTransaction(transactionID);
+                response.Transaction = await this.GetTransactionAsync(transactionID);
             }
             catch (Exception)
             {
@@ -95,13 +95,12 @@ namespace IDMONEY.IO.Transactions
             return response;
         }
 
-        public SearchTransactionResponse GetUserTransactions(ClaimsPrincipal claimsPrincipal)
+        public async Task<SearchTransactionResponse> GetUserTransactionsAsync(ClaimsPrincipal claimsPrincipal)
         {
             SearchTransactionResponse response = new SearchTransactionResponse();
             try
             {
-                response.Transactions = this.transactionRepository.GetUserTransactions(claimsPrincipal.GetUserId());
-                response.IsSuccessful = true;
+                response.Transactions = await this.transactionRepository.GetUserTransactionsAsync(claimsPrincipal.GetUserId());
             }
             catch (Exception)
             {
@@ -124,9 +123,9 @@ namespace IDMONEY.IO.Transactions
             return candidate;
         }
 
-        private Transaction GetTransaction(long transactionId)
+        private async Task<Transaction> GetTransactionAsync(long transactionId)
         {
-            return this.transactionRepository.Get(transactionId);
+            return await this.transactionRepository.GetAsync(transactionId);
         }
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿#region Libraries
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using IDMONEY.IO.Databases;
 using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Users;
@@ -9,43 +10,43 @@ namespace IDMONEY.IO.Infrastructure
 {
     public class MySqlTransactionRepository : ITransactionRepository
     {
-        public long Add(TransactionCandidate transation)
+        public async Task<long> AddAsync(TransactionCandidate transation)
         {
             using (var database = new TransactionDatabase())
             {
-                return database.InsertTransaction(transation);
+                return await database.InsertTransactionAsync(transation);
             }
         }
 
-        public Transaction Get(long? transactionId)
+        public async Task<Transaction> GetAsync(long? transactionId)
         {
             using (var database = new TransactionDatabase())
             {
-                return database.GetTransaction(transactionId);
+                return await database.GetTransactionAsync(transactionId);
             }
         }
 
-        public IList<Transaction> GetUserTransactions(long userId)
+        public async Task<IList<Transaction>> GetUserTransactionsAsync(long userId)
         {
             using (var database = new TransactionDatabase())
             {
-                return database.SearchTransactionByUser(userId);
+                return await database.SearchTransactionByUserAsync(userId);
             }
         }
 
-        public void Update(Transaction transaction)
+        public async Task<bool> UpdateAsync(Transaction transaction)
         {
             using (var database = new TransactionDatabase())
             {
-                database.UpdateTransaction(transaction);
+                return await database.UpdateTransactionAsync(transaction);
             }
         }
 
-        public void Update(Transaction transaction, User user, Business business)
+        public async Task<bool> UpdateAsync(Transaction transaction, User user, Business business)
         {
             using (var database = new TransactionDatabase())
             {
-                database.UpdateTransaction(transaction, business, user);
+                return await database.UpdateTransactionAsync(transaction, business, user);
             }
         }
     }

@@ -13,6 +13,7 @@ namespace IDMONEY.IO.Responses
         protected Response()
         {
             Errors = new List<Error>();
+            this.IsSuccessful = true;
         }
     }
 
