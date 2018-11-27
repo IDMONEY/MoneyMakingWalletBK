@@ -35,6 +35,30 @@ namespace IDMONEY.IO
             object value = reader[columnName];
             return ConvertUtil.ValueOrDefault(value, defaultValue);
         }
+
+        /// <summary>
+        /// Checks if a column's value is DBNull
+        /// </summary>
+        /// <param name="dataReader">The data reader</param>
+        /// <param name="columnName">The column name</param>
+        /// <returns>A bool indicating if the column's value is DBNull</returns>
+        public static bool IsDBNull(this IDataReader dataReader, string columnName)
+        {
+            return dataReader[columnName] == DBNull.Value;
+        }
+
+        public static bool ContainsColumn(this IDataReader dataReader, string columnName)
+        {
+            
+            try
+            {
+                return dataReader.GetOrdinal(columnName) >= 0;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+        }
     }
 
 }

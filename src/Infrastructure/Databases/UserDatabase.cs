@@ -90,9 +90,16 @@ namespace IDMONEY.IO.Databases
         //TODO: Move this to a single file or use automapper
         private Account FormatAccount(IDataReader reader)
         {
+            var id = reader.FieldOrDefault<long>("account_id");
+
+            if (id == 0)
+            {
+                return null;
+            }
+
             return new Account()
             {
-                Id = reader.FieldOrDefault<long>("account_id"),
+                Id = id,
                 Type = AccountType.Business,
                 Address = reader.FieldOrDefault<string>("address"),
                 Balance = this.FormatBalance(reader)
