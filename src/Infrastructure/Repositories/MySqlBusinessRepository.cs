@@ -10,7 +10,7 @@ namespace IDMONEY.IO.Infrastructure
 {
     public class MySqlBusinessRepository : IBusinessRepository
     {
-        public async Task<Business> GetAsync(int id)
+        public async Task<Business> GetAsync(long id)
         {
             using (var database = new BusinessDatabase())
             {

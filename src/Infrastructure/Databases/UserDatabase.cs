@@ -23,7 +23,7 @@ namespace IDMONEY.IO.Databases
             //cmd.Parameters.AddWithValue("@p_private_key", user.Privatekey);
             //cmd.Parameters.AddWithValue("@p_available_balance", user.AvailableBalance);
             //cmd.Parameters.AddWithValue("@p_blocked_balance", user.BlockedBalance);
-            cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int32));
+            cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int64));
             cmd.Parameters["@p_id"].Direction = ParameterDirection.Output;
 
             await cmd.ExecuteNonQueryAsync();
@@ -94,7 +94,7 @@ namespace IDMONEY.IO.Databases
 
             if (id == 0)
             {
-                return null;
+                return default(Account);
             }
 
             return new Account()

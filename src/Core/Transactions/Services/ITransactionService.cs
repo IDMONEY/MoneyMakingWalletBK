@@ -9,7 +9,7 @@ namespace IDMONEY.IO.Transactions
 {
     public interface ITransactionService
     {
-        Task<InsertTransactionResponse> AddAsync(InsertTransactionRequest request);
+        Task<InsertTransactionResponse> AddAsync(InsertTransactionRequest request, ClaimsPrincipal claimsPrincipal);
         Task<SearchTransactionResponse> GetUserTransactionsAsync(ClaimsPrincipal claimsPrincipal);
     }
 }

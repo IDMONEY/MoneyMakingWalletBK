@@ -3,14 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using IDMONEY.IO.Accounts;
+using IDMONEY.IO.Data;
 using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Users;
-using MySql.Data.MySqlClient; 
+using MySql.Data.MySqlClient;
 #endregion
 
 namespace IDMONEY.IO.Databases
 {
-    public class TransactionDatabase : RelationalDatabase
+    public class TransactionDatabase : RelationalDatabaseAsync
     {
         public async Task<long> InsertTransactionAsync(TransactionCandidate candidate)
         {
@@ -19,9 +21,10 @@ namespace IDMONEY.IO.Databases
                 CommandType = System.Data.CommandType.StoredProcedure
             };
 
-            cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int32));
+            cmd.Parameters.Add(new MySqlParameter("@p_id", MySqlDbType.Int64));
             cmd.Parameters["@p_id"].Direction = ParameterDirection.Output;
-            cmd.Parameters.AddWithValue("@p_business_id", candidate.BusinessId);
+            cmd.Parameters.AddWithValue("@p_from_account_id", candidate.FromAccountId);
+            cmd.Parameters.AddWithValue("@p_to_account_id", candidate.ToAccountId);
             cmd.Parameters.AddWithValue("@p_user_id", candidate.UserId);
             cmd.Parameters.AddWithValue("@p_amount", candidate.Amount);
             cmd.Parameters.AddWithValue("@p_registration_date", candidate.RegistrationDate);
@@ -33,13 +36,13 @@ namespace IDMONEY.IO.Databases
             return Convert.ToInt64(cmd.Parameters["@p_id"].Value);
         }
 
-        public async Task<bool> UpdateTransactionAsync(Transaction transaction, Business business = null, User user = null)
+        public async Task<bool> UpdateTransactionAsync(Transaction transaction, Account fromAccount = null, Account toAccount = null)
         {
-            return await this.UpdateTransactionAsync(transaction.Id, transaction.Status, transaction.ProcessingDate.Value, transaction.Amount, business, user);
+            return await this.UpdateTransactionAsync(transaction.Id, transaction.Status, transaction.ProcessingDate.Value, transaction.Amount, fromAccount, toAccount);
         }
 
         public async Task<bool> UpdateTransactionAsync(long? transactionId, TransactionStatus status, DateTime processingDate,
-            decimal? amount = null, Business business = null, User user = null)
+            decimal? amount = null, Account fromAccount = null, Account toAccount = null)
         {
             using (MySqlTransaction transaction = await Connection.BeginTransactionAsync())
             {
@@ -54,27 +57,25 @@ namespace IDMONEY.IO.Databases
 
                     await cmd.ExecuteNonQueryAsync();
 
-                    if (amount.IsNotNull())
+                    if (amount.IsNotNull() && fromAccount.IsNotNull() && toAccount.IsNotNull())
                     {
-                        cmd = new MySqlCommand("sp_UpdateBalanceUser", Connection);
+                        cmd = new MySqlCommand("sp_updateAccountBalance", Connection);
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@p_available_balance", amount);
                         cmd.Parameters.AddWithValue("@p_blocked_balance", 0);
-                        cmd.Parameters.AddWithValue("@p_isSubtraction", true);
-                        cmd.Parameters.AddWithValue("@p_isSum", false);
-                        cmd.Parameters.AddWithValue("@p_userId", user.Id);
+                        cmd.Parameters.AddWithValue("@p_tran_type", 'D');
+                        cmd.Parameters.AddWithValue("@p_account_id", fromAccount.Id);
 
                         await cmd.ExecuteNonQueryAsync();
 
-                        cmd = new MySqlCommand("sp_UpdateBalanceBusiness", Connection);
+                        cmd = new MySqlCommand("sp_updateAccountBalance", Connection);
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                        cmd.Parameters.AddWithValue("@p_blocked_balance", 0);
                         cmd.Parameters.AddWithValue("@p_available_balance", amount);
-                        cmd.Parameters.AddWithValue("@p_isSubtraction", false); 
-                        cmd.Parameters.AddWithValue("@p_isSum", true);
-                        cmd.Parameters.AddWithValue("@p_businessId", business.Id);
+                        cmd.Parameters.AddWithValue("@p_blocked_balance", 0);
+                        cmd.Parameters.AddWithValue("@p_tran_type", 'C');
+                        cmd.Parameters.AddWithValue("@p_account_id", toAccount.Id);
 
                         await cmd.ExecuteNonQueryAsync();
                     }
@@ -90,68 +91,45 @@ namespace IDMONEY.IO.Databases
             return await Task.FromResult(true);
         }
 
-        public async Task<List<Transaction>> SearchTransactionByUserAsync(long userId)
+        public async Task<IList<Transaction>> SearchTransactionByUserAsync(long userId)
         {
-            MySqlCommand cmd = new MySqlCommand("sp_SearchTransactionByUser", Connection);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-            cmd.Parameters.AddWithValue("@p_user_id", userId);
+            var parameters = DataParameterBuilder.Create(this.GetFactory())
+                                 .AddInParameter("@p_user_id", DbType.Int64, userId)
+                                 .Parameters;
 
-            List<Transaction> list = new List<Transaction>();
-            using (IDataReader reader = await cmd.ExecuteReaderAsync())
-            {
-                while (reader.Read())
-                {
-                    list.Add(new Transaction()
-                    {
-                        Id = Convert.ToInt64(reader["id"]),
-                        Amount = Convert.ToDecimal(reader["amount"]),
-                        BusinessId = Convert.ToInt32(reader["business_id"]),
-                        BusinessName = reader["name"].ToString(),
-                        Image = reader["image"].ToString(),
-                        Description = Convert.IsDBNull(reader["description"]) ? null : reader["description"].ToString(),
-                        ProcessingDate = Convert.IsDBNull(reader["processing_date"]) ? null : (DateTime?)Convert.ToDateTime(reader["processing_date"]),
-                        RegistrationDate = Convert.ToDateTime(reader["registration_date"]),
-                        Status = (TransactionStatus)Convert.ToInt32(reader["status"]),
-                        //StatusName = reader["StatusName"].ToString(),
-                        UserId = (int?)Convert.ToInt64(reader["user_id"])
-                    });
-                }
-            }
-
+            IList<Transaction> list = new List<Transaction>();
+            await this.ExecuteReaderAsync("sp_SearchTransactionByUser", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatTransaction));
             return list;
         }
 
         public async Task<Transaction> GetTransactionAsync(long? transactionId)
         {
-            MySqlCommand cmd = new MySqlCommand("sp_GetTransaction", Connection);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            var parameters = DataParameterBuilder.Create(this.GetFactory())
+                                 .AddInParameter("@p_id", DbType.Int64, transactionId)
+                                 .Parameters;
 
-            cmd.Parameters.AddWithValue("@p_id", transactionId);
-
-            Transaction transaction = null;
-            using (IDataReader reader = await cmd.ExecuteReaderAsync())
-            {
-                if (reader.Read())
-                {
-                    transaction = new Transaction()
-                    {
-                        Id = Convert.ToInt64(reader["id"]),
-                        Amount = Convert.ToDecimal(reader["amount"]),
-                        BusinessId = Convert.ToInt32(reader["business_id"]),
-                        BusinessName = reader["name"].ToString(),
-                        Image = reader["image"].ToString(),
-                        Description = Convert.IsDBNull(reader["description"]) ? null : reader["description"].ToString(),
-                        ProcessingDate = Convert.IsDBNull(reader["processing_date"]) ? null : (DateTime?)Convert.ToDateTime(reader["processing_date"]),
-                        RegistrationDate = Convert.ToDateTime(reader["registration_date"]),
-                        Status = (TransactionStatus)Convert.ToInt32(reader["status"]),
-                        //StatusName = reader["StatusName"].ToString(),
-                        UserId = (int?)Convert.ToInt64(reader["user_id"])
-                    };
-                }
-            }
-
+            Transaction transaction = default(Transaction);
+            await this.ExecuteReaderAsync("sp_GetTransaction", CommandType.StoredProcedure, parameters, (reader) => this.MapEntity(reader, ref transaction, this.FormatTransaction));
             return transaction;
         }
+
+        #region Private Methods
+        private Transaction FormatTransaction(IDataReader reader)
+        {
+            return new Transaction()
+            {
+                Id = reader.FieldOrDefault<long>("id"),
+                Amount = reader.FieldOrDefault<decimal>("amount"),
+                Description = reader.FieldOrDefault<string>("description", string.Empty),
+                ProcessingDate = reader.FieldOrDefault<DateTime>("processing_date", default(DateTime)),
+                RegistrationDate = reader.FieldOrDefault<DateTime>("registration_date", default(DateTime)),
+                Status = (TransactionStatus)Convert.ToInt32(reader["status"]),
+                FromAccountId = reader.FieldOrDefault<long>("from_account_id"),
+                ToAccountId = reader.FieldOrDefault<long>("to_account_id"),
+                UserId = Convert.ToInt64(reader["user_id"])
+            };
+        }   
+        #endregion
     }
 }

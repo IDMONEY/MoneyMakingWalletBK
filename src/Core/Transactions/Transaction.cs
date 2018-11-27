@@ -11,15 +11,9 @@ namespace IDMONEY.IO.Transactions
     {
         #region Properties
         public long? Id { get; set; }
-
-        public int? BusinessId { get; set; }
-
-        public string BusinessName { get; set; }
-
-        public string Image { get; set; }
-
-        public int? UserId { get; set; }
-
+        public long UserId { get; set; }
+        public long FromAccountId { get; set; }
+        public long ToAccountId { get; set; }
         public decimal? Amount { get; set; }
 
         public DateTime? RegistrationDate { get; set; }
@@ -30,7 +24,17 @@ namespace IDMONEY.IO.Transactions
 
         public TransactionStatus Status { get; set; }
 
-        public string StatusName => this.Status.GetStringValue();
+        public string StatusName
+        {
+            get
+            {
+                if (!Enum.IsDefined(typeof(TransactionStatus), this.Status))
+                {
+                    return String.Empty;
+                }
+                return this.Status.GetStringValue();
+            }
+        }
         #endregion
 
 

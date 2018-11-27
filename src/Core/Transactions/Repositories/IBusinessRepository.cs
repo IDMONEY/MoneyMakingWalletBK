@@ -9,7 +9,7 @@ namespace IDMONEY.IO.Transactions
 {
     public interface IBusinessRepository
     {
-        Task<Business> GetAsync(int id);
+        Task<Business> GetAsync(long id);
         Task<long> AddAsync(Business business);
         Task<IList<Business>> FindByNameAsync(string name);
         Task<IList<Business>> GetAllAsync();

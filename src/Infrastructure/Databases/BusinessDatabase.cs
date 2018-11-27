@@ -42,10 +42,8 @@ namespace IDMONEY.IO.Databases
 
         }
 
-        public virtual async Task<Business> GetBusinessAsync(int businessId)
+        public virtual async Task<Business> GetBusinessAsync(long businessId)
         {
-          
-
             var parameters = DataParameterBuilder.Create(this.GetFactory())
                                   .AddInParameter("@p_businessId", DbType.Int64, businessId)
                                   .Parameters;
@@ -76,32 +74,10 @@ namespace IDMONEY.IO.Databases
                 Description = reader["description"].ToString(),
                 Name = reader["name"].ToString(),
                 Id = Convert.ToInt32(reader["id"]),
-                Account = this.FormatAccount(reader)
+                Account = reader.FormatAccount()
             };
 
             return business;
-        }
-
-        //TODO: Move this to a single file or use automapper
-        private Account FormatAccount(IDataReader reader)
-        {
-            return new Account()
-            {
-                Id = Convert.ToInt32(reader["account_id"]),
-                Type = AccountType.Business,
-                Address = reader["address"].ToString(),
-                Balance = this.FormatBalance(reader)
-            };
-        }
-
-        private Balance FormatBalance(IDataReader reader)
-        {
-            return new Balance()
-            {
-                Available = Convert.ToDecimal(reader["available_balance"]),
-                Blocked = Convert.ToDecimal(reader["blocked_balance"]),
-            };
-
         }
         #endregion
     }

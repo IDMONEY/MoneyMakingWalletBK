@@ -1,6 +1,7 @@
 ﻿#region Libraries
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IDMONEY.IO.Accounts;
 using IDMONEY.IO.Databases;
 using IDMONEY.IO.Transactions;
 using IDMONEY.IO.Users;
@@ -42,11 +43,11 @@ namespace IDMONEY.IO.Infrastructure
             }
         }
 
-        public async Task<bool> UpdateAsync(Transaction transaction, User user, Business business)
+        public async Task<bool> UpdateAsync(Transaction transaction, Account fromAccount, Account toAccount)
         {
             using (var database = new TransactionDatabase())
             {
-                return await database.UpdateTransactionAsync(transaction, business, user);
+                return await database.UpdateTransactionAsync(transaction, fromAccount, toAccount);
             }
         }
     }

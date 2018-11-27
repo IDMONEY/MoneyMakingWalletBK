@@ -1,4 +1,5 @@
 ﻿#region Libraries
+using IDMONEY.IO.Accounts;
 using IDMONEY.IO.Authorization;
 using IDMONEY.IO.Cryptography;
 using IDMONEY.IO.Infrastructure;
@@ -27,6 +28,8 @@ namespace IDMONEY.IO.IoC
 
             services.AddSingleton<ITokenGenerator, JwtSecurityTokenGenerator>();
             services.AddSingleton<IAuthorizationService, AuthorizationService>();
+
+            services.AddSingleton<IAccountRepository, MySqlAccountRepository>();
         }
     }
 }

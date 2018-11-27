@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Transactions;
+using System.Security.Claims;
 
 #endregion
 
@@ -35,9 +36,8 @@ namespace IDMONEY.IO.Controllers
         [HttpPost, Authorize]
         public async Task<Response> InsertTransaction([FromBody]InsertTransactionRequest request)
         {
-            request.Transaction.UserId = UserId;
 
-            return await this.transactionService.AddAsync(request);
+            return await this.transactionService.AddAsync(request, HttpContext.User);
         }
 
         [HttpGet, Authorize]

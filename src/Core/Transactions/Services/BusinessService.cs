@@ -70,7 +70,15 @@ namespace IDMONEY.IO.Transactions
 
         public async Task<SearchBusinessResponse> GetByUserAsync(ClaimsPrincipal claimsPrincipal)
         {
-            return await this.Get(() => this.businessRepository.GetByUserAsync(claimsPrincipal.GetUserId()));
+            try
+            {
+                return await this.Get(() => this.businessRepository.GetByUserAsync(claimsPrincipal.GetUserId()));
+            }
+            catch (Exception exc)
+            {
+
+                throw;
+            }
         }
         #endregion
 
