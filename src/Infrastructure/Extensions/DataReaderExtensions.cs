@@ -8,7 +8,7 @@ namespace IDMONEY.IO.Databases
 {
     public static class DataReaderExtensions
     {
-        public static Account FormatAccount(this IDataReader reader)
+        public static Account FormatAccount(this IDataReader reader, AccountType type = AccountType.Business)
         {
             var id = reader.FieldOrDefault<long>("account_id");
 
@@ -20,7 +20,7 @@ namespace IDMONEY.IO.Databases
             return new Account()
             {
                 Id = Convert.ToInt32(reader["account_id"]),
-                Type = AccountType.Business,
+                Type = type,
                 Address = reader["address"].ToString(),
                 Balance = reader.FormatBalance()
             };

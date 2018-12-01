@@ -82,36 +82,7 @@ namespace IDMONEY.IO.Databases
             {
                 Email = reader.FieldOrDefault<string>("email"),
                 Id = reader.FieldOrDefault<long>("user_id"),
-                Account = this.FormatAccount(reader)
-            };
-        }
-
-
-        //TODO: Move this to a single file or use automapper
-        private Account FormatAccount(IDataReader reader)
-        {
-            var id = reader.FieldOrDefault<long>("account_id");
-
-            if (id == 0)
-            {
-                return default(Account);
-            }
-
-            return new Account()
-            {
-                Id = id,
-                Type = AccountType.Business,
-                Address = reader.FieldOrDefault<string>("address"),
-                Balance = this.FormatBalance(reader)
-            };
-        }
-
-        private Balance FormatBalance(IDataReader reader)
-        {
-            return new Balance()
-            {
-                Available = reader.FieldOrDefault<decimal>("available_balance"),
-                Blocked = reader.FieldOrDefault<decimal>("blocked_balance"),
+                Account = reader.FormatAccount(AccountType.Personal)
             };
         }
     }
