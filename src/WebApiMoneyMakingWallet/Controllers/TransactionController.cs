@@ -46,6 +46,13 @@ namespace IDMONEY.IO.Controllers
             return await this.transactionService.GetUserTransactionsAsync(HttpContext.User);
         }
 
+        [HttpGet, Authorize]
+        [Route("personal")]
+        public async Task<SearchTransactionResponse> SearchTransactionByUserAccount()
+        {
+            return await this.transactionService.GetAccountTransactionsAsync(HttpContext.User);
+        }
+        
         //TODO: FindByStatus
         #endregion
     }

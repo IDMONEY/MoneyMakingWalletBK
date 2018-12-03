@@ -103,6 +103,19 @@ namespace IDMONEY.IO.Databases
             return list;
         }
 
+        public async Task<IList<Transaction>> GetTransactionsByAccount(Account account)
+        {
+            var parameters = DataParameterBuilder.Create(this.GetFactory())
+                                 .AddInParameter("@p_account_id", DbType.Int64, account.Id)
+                                 .Parameters;
+
+            IList<Transaction> list = new List<Transaction>();
+            await this.ExecuteReaderAsync("sp_GetTransactionsByAccount", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatTransaction));
+            return list;
+
+            
+        }
+
         public async Task<Transaction> GetTransactionAsync(long? transactionId)
         {
             var parameters = DataParameterBuilder.Create(this.GetFactory())

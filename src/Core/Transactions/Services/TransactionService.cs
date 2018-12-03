@@ -102,13 +102,38 @@ namespace IDMONEY.IO.Transactions
 
                 response.Transaction = await this.GetTransactionAsync(transactionID);
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
                 response.IsSuccessful = false;
                 response.Errors.Add(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
             }
 
+            return response;
+        }
+
+        public async Task<SearchTransactionResponse> GetAccountTransactionsAsync(ClaimsPrincipal claimsPrincipal)
+        {
+            SearchTransactionResponse response = new SearchTransactionResponse();
+            try
+            {
+                var user = await this.userRepository.GetByIdAsync(claimsPrincipal.GetUserId());
+
+                if (user.Account.IsNotNull())
+                {
+                    response.Transactions = await this.transactionRepository.GetAccountTransactionsAsync(user.Account);
+                }
+                else
+                {
+                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.NotFound).ToString(), Message = $"Account was not found" });
+                }
+            }
+            catch (Exception exc)
+            {
+
+                response.IsSuccessful = false;
+                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
+            }
             return response;
         }
 

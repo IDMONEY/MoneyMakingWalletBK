@@ -16,5 +16,6 @@ namespace IDMONEY.IO.Transactions
         Task<bool> UpdateAsync(Transaction transaction, Account fromAccount, Account toAccount);
         Task<Transaction> GetAsync(long? transactionId);
         Task<IList<Transaction>> GetUserTransactionsAsync(long userId);
+        Task<IList<Transaction>> GetAccountTransactionsAsync(Account account);
     }
 }

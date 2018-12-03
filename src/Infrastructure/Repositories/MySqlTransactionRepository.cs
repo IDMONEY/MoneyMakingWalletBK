@@ -19,6 +19,14 @@ namespace IDMONEY.IO.Infrastructure
             }
         }
 
+        public async Task<IList<Transaction>> GetAccountTransactionsAsync(Account account)
+        {
+            using (var database = new TransactionDatabase())
+            {
+                return await database.GetTransactionsByAccount(account);
+            }
+        }
+
         public async Task<Transaction> GetAsync(long? transactionId)
         {
             using (var database = new TransactionDatabase())
