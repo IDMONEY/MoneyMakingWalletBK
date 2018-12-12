@@ -8,7 +8,7 @@ namespace IDMONEY.IO
     {
         public static T ValueOrDefault<T>(object value, T defaultValue)
         {
-            if (value is DBNull || value == null)
+            if (value is DBNull || value.IsNull())
             {
                 return defaultValue;
             }

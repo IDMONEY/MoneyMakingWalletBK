@@ -152,6 +152,24 @@ namespace IDMONEY.IO.Transactions
             }
             return response;
         }
+
+
+        public async Task<TransactionResponse> GetAsync(ClaimsPrincipal claimsPrincipal, long id)
+        {
+            TransactionResponse response = new TransactionResponse();
+            try
+            {
+                //TODO: Check if the user has access to the transaction
+                response.Transaction = await this.GetTransactionAsync(id);
+                
+            }
+            catch (Exception exc)
+            {
+
+                
+            }
+            return response;
+        }
         #endregion
 
         #region Private Methods

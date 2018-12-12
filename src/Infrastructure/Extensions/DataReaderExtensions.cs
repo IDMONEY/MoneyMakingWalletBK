@@ -19,9 +19,10 @@ namespace IDMONEY.IO.Databases
 
             return new Account()
             {
-                Id = Convert.ToInt32(reader["account_id"]),
+                Id = reader.FieldOrDefault<long>("account_id"),
                 Type = type,
-                Address = reader["address"].ToString(),
+                Address = reader.FieldOrDefault<string>("address"),
+                Symbol = reader.FieldOrDefault<string>("symbol"),
                 Balance = reader.FormatBalance()
             };
         }
@@ -30,8 +31,8 @@ namespace IDMONEY.IO.Databases
         {
             return new Balance()
             {
-                Available = Convert.ToDecimal(reader["available_balance"]),
-                Blocked = Convert.ToDecimal(reader["blocked_balance"]),
+                Available = reader.FieldOrDefault<decimal>("available_balance"),
+                Blocked = reader.FieldOrDefault<decimal>("blocked_balance"),
             };
 
         }

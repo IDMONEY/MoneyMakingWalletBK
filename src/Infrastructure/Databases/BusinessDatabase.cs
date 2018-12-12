@@ -70,10 +70,10 @@ namespace IDMONEY.IO.Databases
             var business = new Business()
             {
 
-                Image = reader["image"].ToString(),
-                Description = reader["description"].ToString(),
-                Name = reader["name"].ToString(),
-                Id = Convert.ToInt32(reader["id"]),
+                Image = reader.FieldOrDefault<string>("image"),
+                Description = reader.FieldOrDefault<string>("description"),
+                Name = reader.FieldOrDefault<string>("name"),
+                Id = reader.FieldOrDefault<long>("id"),
                 Account = reader.FormatAccount()
             };
 

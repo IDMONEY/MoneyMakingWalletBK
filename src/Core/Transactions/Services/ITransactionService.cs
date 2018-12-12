@@ -12,5 +12,6 @@ namespace IDMONEY.IO.Transactions
         Task<InsertTransactionResponse> AddAsync(InsertTransactionRequest request, ClaimsPrincipal claimsPrincipal);
         Task<SearchTransactionResponse> GetUserTransactionsAsync(ClaimsPrincipal claimsPrincipal);
         Task<SearchTransactionResponse> GetAccountTransactionsAsync(ClaimsPrincipal claimsPrincipal);
+        Task<TransactionResponse> GetAsync(ClaimsPrincipal claimsPrincipal, long id);
     }
 }

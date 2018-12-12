@@ -40,6 +40,15 @@ namespace IDMONEY.IO.Controllers
             return await this.transactionService.AddAsync(request, HttpContext.User);
         }
 
+        [Route("{id:long}")]
+        [HttpGet, Authorize]
+        public async Task<Response> SearchTransaction(long id)
+        {
+            Ensure.IsNotNegativeOrZero(id);
+
+            return await this.transactionService.GetAsync(HttpContext.User, id);
+        }
+
         [HttpGet, Authorize]
         public async Task<SearchTransactionResponse> SearchTransactionByUser()
         {

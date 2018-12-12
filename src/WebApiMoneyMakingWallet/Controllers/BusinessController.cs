@@ -49,9 +49,9 @@ namespace IDMONEY.IO.Controllers
         }
 
 
-        [Route("{id:int}")]
+        [Route("{id:long}")]
         [HttpGet, Authorize]
-        public async Task<Response> SearchBusiness(int id)
+        public async Task<Response> SearchBusiness(long id)
         {
             Ensure.IsNotNegativeOrZero(id);
 

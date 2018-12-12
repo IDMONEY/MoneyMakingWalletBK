@@ -27,7 +27,7 @@ namespace IDMONEY.IO.Infrastructure
             }
         }
 
-        public async Task<Transaction> GetAsync(long? transactionId)
+        public async Task<Transaction> GetAsync(long transactionId)
         {
             using (var database = new TransactionDatabase())
             {

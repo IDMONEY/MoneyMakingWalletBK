@@ -49,7 +49,7 @@ namespace IDMONEY.IO.Transactions
             return await this.Get(() => this.businessRepository.FindByNameAsync(name));
         }
 
-        public async Task<BusinessResponse> GetAsync(int id)
+        public async Task<BusinessResponse> GetAsync(long id)
         {
             var business = await this.businessRepository.GetAsync(id);
 
@@ -70,15 +70,8 @@ namespace IDMONEY.IO.Transactions
 
         public async Task<SearchBusinessResponse> GetByUserAsync(ClaimsPrincipal claimsPrincipal)
         {
-            try
-            {
-                return await this.Get(() => this.businessRepository.GetByUserAsync(claimsPrincipal.GetUserId()));
-            }
-            catch (Exception exc)
-            {
+            return await this.Get(() => this.businessRepository.GetByUserAsync(claimsPrincipal.GetUserId()));
 
-                throw;
-            }
         }
         #endregion
 
