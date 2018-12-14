@@ -35,11 +35,11 @@ namespace IDMONEY.IO.Infrastructure
             }
         }
 
-        public async Task<IList<Transaction>> GetUserTransactionsAsync(long userId)
+        public async Task<IList<Transaction>> GetBusinessesTransactionsAsync(long userId)
         {
             using (var database = new TransactionDatabase())
             {
-                return await database.SearchTransactionByUserAsync(userId);
+                return await database.SearchBusinessTransactionByUserAsync(userId);
             }
         }
 

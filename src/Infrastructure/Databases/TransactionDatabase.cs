@@ -91,7 +91,7 @@ namespace IDMONEY.IO.Databases
             return await Task.FromResult(true);
         }
 
-        public async Task<IList<Transaction>> SearchTransactionByUserAsync(long userId)
+        public async Task<IList<Transaction>> SearchBusinessTransactionByUserAsync(long userId)
         {
 
             var parameters = DataParameterBuilder.Create(this.GetFactory())
@@ -99,7 +99,7 @@ namespace IDMONEY.IO.Databases
                                  .Parameters;
 
             IList<Transaction> list = new List<Transaction>();
-            await this.ExecuteReaderAsync("sp_SearchTransactionByUser", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatTransaction));
+            await this.ExecuteReaderAsync("sp_SearchBusinessTransactionsByUser", CommandType.StoredProcedure, parameters, (reader) => this.MapEntities(reader, ref list, this.FormatTransaction));
             return list;
         }
 

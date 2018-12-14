@@ -50,9 +50,10 @@ namespace IDMONEY.IO.Controllers
         }
 
         [HttpGet, Authorize]
-        public async Task<SearchTransactionResponse> SearchTransactionByUser()
+        [Route("business")]
+        public async Task<SearchTransactionResponse> SearchBusinesTransactions()
         {
-            return await this.transactionService.GetUserTransactionsAsync(HttpContext.User);
+            return await this.transactionService.GetBusinessTransactionsAsync(HttpContext.User);
         }
 
         [HttpGet, Authorize]
