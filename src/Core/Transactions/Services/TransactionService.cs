@@ -137,12 +137,12 @@ namespace IDMONEY.IO.Transactions
             return response;
         }
 
-        public async Task<SearchTransactionResponse> GetUserTransactionsAsync(ClaimsPrincipal claimsPrincipal)
+        public async Task<SearchTransactionResponse> GetBusinessTransactionsAsync(ClaimsPrincipal claimsPrincipal)
         {
             SearchTransactionResponse response = new SearchTransactionResponse();
             try
             {
-                response.Transactions = await this.transactionRepository.GetUserTransactionsAsync(claimsPrincipal.GetUserId());
+                response.Transactions = await this.transactionRepository.GetBusinessesTransactionsAsync(claimsPrincipal.GetUserId());
             }
             catch (Exception)
             {
