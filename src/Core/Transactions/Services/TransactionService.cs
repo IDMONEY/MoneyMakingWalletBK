@@ -5,6 +5,8 @@ using IDMONEY.IO.Security;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Users;
+using System.Threading.Tasks;
+using IDMONEY.IO.Accounts;
 #endregion
 
 namespace IDMONEY.IO.Transactions
@@ -13,32 +15,33 @@ namespace IDMONEY.IO.Transactions
     {
         #region Members
         private readonly ITransactionRepository transactionRepository;
-        private readonly IBusinessRepository businessRepository;
+        private readonly IAccountRepository accountRepository;
         private readonly IUserRepository userRepository;
         #endregion
 
         #region Constructor
-        public TransactionService(ITransactionRepository transactionRepository, IBusinessRepository businessRepository, IUserRepository userRepository)
+        public TransactionService(ITransactionRepository transactionRepository, IAccountRepository accountRepository, IUserRepository userRepository)
         {
             Ensure.IsNotNull(transactionRepository);
-            Ensure.IsNotNull(businessRepository);
+            Ensure.IsNotNull(accountRepository);
             Ensure.IsNotNull(userRepository);
 
             this.transactionRepository = transactionRepository;
-            this.businessRepository = businessRepository;
+            this.accountRepository = accountRepository;
             this.userRepository = userRepository;
         }
 
         #endregion
 
         #region Methods
-        public InsertTransactionResponse Add(InsertTransactionRequest request)
+        public async Task<InsertTransactionResponse> AddAsync(InsertTransactionRequest request, ClaimsPrincipal claimsPrincipal)
         {
             InsertTransactionResponse response = new InsertTransactionResponse();
-            response.IsSuccessful = true;
 
             try
             {
+                //TODO: Validate if a the user can add transactions
+
                 if (request.Transaction.Amount <= 0)
                 {
                     response.IsSuccessful = false;
@@ -46,44 +49,58 @@ namespace IDMONEY.IO.Transactions
                     return response;
                 }
 
-                var business = this.businessRepository.Get(request.Transaction.BusinessId.Value);
+                var fromAccount = await this.accountRepository.GetAsync(request.Transaction.FromAccountId).ConfigureAwait(false);
 
-                if (business.IsNull())
+
+                if (fromAccount.IsNull())
                 {
                     response.IsSuccessful = false;
-                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.NotFound).ToString(), Message = "The business was not found" });
+                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.NotFound).ToString(), Message = $"Account {request.Transaction.FromAccountId} was not found" });
                     return response;
                 }
 
-                var transactionID = this.transactionRepository.Add(CreateTransaction(request, business));
+                var toAccount = await this.accountRepository.GetAsync(request.Transaction.ToAccountId).ConfigureAwait(false);
 
-                var user = this.userRepository.GetById(request.Transaction.UserId.Value);
 
-                //TODO: REDUCE THE NUMBER OF DATABASE ACCESS
-                if (user.AvailableBalance >= request.Transaction.Amount)
+                if (toAccount.IsNull())
                 {
-                    var transaction = this.GetTransaction(transactionID);
+                    response.IsSuccessful = false;
+                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.NotFound).ToString(), Message = $"Account {request.Transaction.ToAccountId} was not found" });
+                    return response;
+                }
+
+
+
+                var user = await this.userRepository.GetByIdAsync(request.Transaction.UserId);
+
+                //TODO: Check if user can register transactions
+
+                var transactionID = await this.transactionRepository.AddAsync(CreateTransaction(request));
+
+               if (fromAccount.Balance.Available >= request.Transaction.Amount)
+                {
+                    var transaction = await this.GetTransactionAsync(transactionID);
                     transaction.ChangeStatus(TransactionStatus.Processed)
                                .UpdateAmount(request.Transaction.Amount)
                                .SetProcessingDate(SystemTime.Now());
 
-                    this.transactionRepository.Update(transaction, user, business);
+                    await  this.transactionRepository.UpdateAsync(transaction, fromAccount, toAccount);
                 }
                 else
                 {
-                    var transaction = this.GetTransaction(transactionID);
+                    var transaction = await this.GetTransactionAsync(transactionID);
                     transaction.ChangeStatus(TransactionStatus.Rejected)
                                .UpdateAmount(null)
                                .SetProcessingDate(SystemTime.Now());
 
-                    this.transactionRepository.Update(transaction);
+                    await this.transactionRepository.UpdateAsync(transaction);
 
                     response.IsSuccessful = false;
                     response.Errors.Add(new Error() { Code = ((int)ErrorCodes.InsufficientFunds).ToString(), Message = "The available balance is not enough to make the transaction" });
                     return response;
                 }
 
-                response.Transaction = this.GetTransaction(transactionID);
+                response.Transaction = await this.GetTransactionAsync(transactionID);
             }
             catch (Exception)
             {
@@ -95,38 +112,81 @@ namespace IDMONEY.IO.Transactions
             return response;
         }
 
-        public SearchTransactionResponse GetUserTransactions(ClaimsPrincipal claimsPrincipal)
+        public async Task<SearchTransactionResponse> GetAccountTransactionsAsync(ClaimsPrincipal claimsPrincipal)
         {
             SearchTransactionResponse response = new SearchTransactionResponse();
             try
             {
-                response.Transactions = this.transactionRepository.GetUserTransactions(claimsPrincipal.GetUserId());
-                response.IsSuccessful = true;
+                var user = await this.userRepository.GetByIdAsync(claimsPrincipal.GetUserId());
+
+                if (user.Account.IsNotNull())
+                {
+                    response.Transactions = await this.transactionRepository.GetAccountTransactionsAsync(user.Account);
+                }
+                else
+                {
+                    response.Errors.Add(new Error() { Code = ((int)ErrorCodes.NotFound).ToString(), Message = $"Account was not found" });
+                }
+            }
+            catch (Exception exc)
+            {
+
+                response.IsSuccessful = false;
+                response.Errors.Add(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
+            }
+            return response;
+        }
+
+        public async Task<SearchTransactionResponse> GetUserTransactionsAsync(ClaimsPrincipal claimsPrincipal)
+        {
+            SearchTransactionResponse response = new SearchTransactionResponse();
+            try
+            {
+                response.Transactions = await this.transactionRepository.GetUserTransactionsAsync(claimsPrincipal.GetUserId());
             }
             catch (Exception)
             {
 
                 response.IsSuccessful = false;
                 response.Errors.Add(new Error() { Code = ((int)ErrorCodes.Unknown).ToString(), Message = "There was a problem. Please try again later" });
+            }
+            return response;
+        }
+
+
+        public async Task<TransactionResponse> GetAsync(ClaimsPrincipal claimsPrincipal, long id)
+        {
+            TransactionResponse response = new TransactionResponse();
+            try
+            {
+                //TODO: Check if the user has access to the transaction
+                response.Transaction = await this.GetTransactionAsync(id);
+                
+            }
+            catch (Exception exc)
+            {
+
+                
             }
             return response;
         }
         #endregion
 
         #region Private Methods
-        private TransactionCandidate CreateTransaction(InsertTransactionRequest request, Business business)
+        private TransactionCandidate CreateTransaction(InsertTransactionRequest request)
         {
             var candidate = TransactionCandidate.Create();
-            candidate.UserId = request.Transaction.UserId;
+            candidate.FromAccountId = request.Transaction.FromAccountId;
             candidate.Amount = request.Transaction.Amount;
             candidate.Description = request.Transaction.Description;
-            candidate.BusinessId = business.Id;
+            candidate.ToAccountId = request.Transaction.ToAccountId;
+            candidate.UserId = request.Transaction.UserId;
             return candidate;
         }
 
-        private Transaction GetTransaction(long transactionId)
+        private async Task<Transaction> GetTransactionAsync(long transactionId)
         {
-            return this.transactionRepository.Get(transactionId);
+            return await this.transactionRepository.GetAsync(transactionId);
         }
         #endregion
     }

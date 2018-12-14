@@ -9,6 +9,6 @@ namespace IDMONEY.IO.Requests
 {
     public class CreateUserRequest : UserRequest
     {
-
+        public string Nickname { get; set; }
     }
 }

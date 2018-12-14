@@ -33,16 +33,16 @@ namespace IDMONEY.IO.Controllers
 
         #region Methods
         [HttpPost]
-        public Response CreateUser([FromBody]CreateUserRequest req)
+        public async Task<Response> CreateUser([FromBody]CreateUserRequest req)
         {
-            return this.userService.Create(req);
+            return await this.userService.CreateAsync(req);
         }
 
 
         [HttpGet, Authorize]
-        public Response GetUser()
+        public async Task<Response> GetUser()
         {
-            return this.userService.GetUser(HttpContext.User);
+            return await this.userService.GetUserAsync(HttpContext.User);
         } 
         #endregion
     }

@@ -25,12 +25,14 @@ namespace IDMONEY.IO
         #region Properties
         public IConfiguration Configuration { get; } 
         #endregion
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBearerAuthentication(Configuration)
                     .AddWebApi();
 
-            services.Add(new ServiceDescriptor(typeof(DataBaseContext), new DataBaseContext(Configuration.GetConnectionString("DefaultConnection"))));
+            //TODO: MOVE THE PROVIDER NAME TO THE CONFIG
+            services.Add(new ServiceDescriptor(typeof(DataBaseContext), new DataBaseContext(Configuration.GetConnectionString("DefaultConnection"), "System.Data.MySql")));
             RegisterServices(services);
         }
 

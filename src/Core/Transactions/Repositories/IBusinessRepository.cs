@@ -1,16 +1,18 @@
 ﻿#region Libraries
 using System;
 using System.Collections.Generic;
-using System.Text; 
+using System.Text;
+using System.Threading.Tasks;
 #endregion
 
 namespace IDMONEY.IO.Transactions
 {
     public interface IBusinessRepository
     {
-        Business Get(int id);
-        long Add(Business business);
-        IList<Business> FindByName(string name);
-        IList<Business> GetAll ();
+        Task<Business> GetAsync(long id);
+        Task<long> AddAsync(Business business);
+        Task<IList<Business>> FindByNameAsync(string name);
+        Task<IList<Business>> GetAllAsync();
+        Task<IList<Business>> GetByUserAsync(long userId);
     }
 }

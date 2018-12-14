@@ -36,9 +36,9 @@ namespace IDMONEY.IO.Controllers
         [Route("login")]
         [HttpPut]
         [HttpPost]
-        public Response Login([FromBody]LoginUserRequest request)
+        public async Task<Response> Login([FromBody]LoginUserRequest request)
         {
-            return authorizationService.Authorize(request);
+            return await authorizationService.AuthorizeAsync(request);
         } 
         #endregion
     }

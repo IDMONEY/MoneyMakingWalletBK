@@ -14,21 +14,19 @@ namespace IDMONEY.IO.Transactions
         #endregion
 
         #region Properties
-        public long? BusinessId { get; set; }
+        public long FromAccountId { get; set; }
+        public long ToAccountId { get; set; }
+        public long UserId { get; set; }
         public decimal? Amount { get; set; }
-        public int? UserId { get; set; }
         public string Description { get; set; }
-        public TransactionStatus Status { get; set; }
+        public TransactionStatus Status => TransactionStatus.Registered;
         public DateTime? RegistrationDate { get;}
         #endregion
 
         #region Static Methods
         public static TransactionCandidate Create()
         {
-            return new TransactionCandidate(SystemTime.Now())
-            {
-                Status = TransactionStatus.Registered
-            };
+            return new TransactionCandidate(SystemTime.Now());
         } 
         #endregion
     }

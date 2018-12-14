@@ -5,6 +5,7 @@ using IDMONEY.IO.Cryptography;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Exceptions;
+using System.Threading.Tasks;
 #endregion
 
 namespace IDMONEY.IO.Users
@@ -14,28 +15,32 @@ namespace IDMONEY.IO.Users
         #region Members
         private readonly IUserRepository userRepository;
         private readonly ITokenGenerator tokenGenerator;
+        private readonly INicknameRepository nicknameRepository;
+
         #endregion
 
         #region Constructor
-        public UserService(IUserRepository userRepository, ITokenGenerator tokenGenerator)
+        public UserService(IUserRepository userRepository, ITokenGenerator tokenGenerator, INicknameRepository nicknameRepository)
         {
             Ensure.IsNotNull(userRepository);
             Ensure.IsNotNull(tokenGenerator);
+            Ensure.IsNotNull(nicknameRepository);
 
             this.userRepository = userRepository;
             this.tokenGenerator = tokenGenerator;
+            this.nicknameRepository = nicknameRepository;
         }
         #endregion
 
         #region Methods
-        public CreateUserResponse Create(CreateUserRequest request)
+        public async Task<CreateUserResponse> CreateAsync(CreateUserRequest request)
         {
             CreateUserResponse response = new CreateUserResponse();
 
-            var user = this.userRepository.GetByEmail(request.Email);
+            var user = await this.userRepository.GetByEmailAsync(request.Email);
 
 
-            if (user == null)
+            if (user.IsNull())
             {
                 //var ecKey = Nethereum.Signer.EthECKey.GenerateKey();
                 //var privateKey = ecKey.GetPrivateKeyAsBytes().ToHex();
@@ -49,13 +54,32 @@ namespace IDMONEY.IO.Users
                     //Privatekey = privateKey
                 };
 
-                user.AvailableBalance = 0;
-                user.BlockedBalance = 0;
-                user.Id = this.userRepository.Add(user);
 
-                response.User = user;
-                response.Token = this.tokenGenerator.Generate(user.Id.ToString());
-                response.IsSuccessful = true;
+                if (request.Nickname.IsNotNullOrEmpty())
+                {
+                    var userByNickName = await this.userRepository.GetByNicknameAsync(request.Nickname);
+
+                    if (userByNickName.IsNotNull())
+                    {
+                        response.IsSuccessful = false;
+                        response.Errors.Add(new Error() { Code = ((int)ErrorCodes.NicknameAlreadyRegistred).ToString(), Message = "That nickname is taken. Try another" });
+
+                    }
+                }
+
+                if (response.IsSuccessful)
+                {
+                    //TODO: Check if account must be assigned
+                    user.Id = await this.userRepository.AddAsync(user);
+
+                    if (request.Nickname.IsNotNullOrEmpty())
+                    {
+                        await this.nicknameRepository.AddAsync(user, NickName.Create(request.Nickname));
+                    }
+
+                    response.User = user;
+                    response.Token = this.tokenGenerator.Generate(user.Id.ToString());
+                }
             }
             else
             {
@@ -68,12 +92,12 @@ namespace IDMONEY.IO.Users
             return response;
         }
 
-        public UserResponse GetUser(ClaimsPrincipal claimsPrincipal)
+        public async Task<UserResponse> GetUserAsync(ClaimsPrincipal claimsPrincipal)
         {
             UserResponse response = new UserResponse();
 
             long userId = claimsPrincipal.GetUserId();
-            var user = this.userRepository.GetById(userId);
+            var user = await this.userRepository.GetByIdAsync(userId);
 
             if (user.IsNull())
             {
@@ -81,7 +105,6 @@ namespace IDMONEY.IO.Users
             }
 
             response.User = user;
-            response.IsSuccessful = true;
             return response;
         }
         #endregion

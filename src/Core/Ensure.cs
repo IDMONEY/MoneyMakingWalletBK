@@ -53,7 +53,7 @@ namespace IDMONEY.IO
         /// <param name="parameter">The numeric value.</param>
         /// <param name="parameterName">The parameter's name.</param>
         [DebuggerStepThrough]
-        public static void IsNotNegative(long parameter, string parameterName)
+        public static void IsNotNegative(long parameter)
         {
             if (parameter < 0)
             {
@@ -67,7 +67,7 @@ namespace IDMONEY.IO
         /// <param name="parameter">The numeric value.</param>
         /// <param name="parameterName">The parameter's name</param>
         [DebuggerStepThrough]
-        public static void IsNotNegativeOrZero(float parameter, string parameterName)
+        public static void IsNotNegativeOrZero(float parameter)
         {
             if (parameter <= 0)
             {
@@ -95,7 +95,7 @@ namespace IDMONEY.IO
         /// <param name="parameter">The numeric value.</param>
         /// <param name="parameterName">The parameter's name</param>
         [DebuggerStepThrough]
-        public static void IsNotNegativeOrZero(double parameter, string parameterName)
+        public static void IsNotNegativeOrZero(double parameter)
         {
             if (parameter <= 0)
             {
@@ -109,7 +109,7 @@ namespace IDMONEY.IO
         /// <param name="parameter">The numeric value.</param>
         /// <param name="parameterName">The parameter's name.</param>
         [DebuggerStepThrough]
-        public static void IsNotNegative(double parameter, string parameterName)
+        public static void IsNotNegative(double parameter)
         {
             if (parameter < 0)
             {

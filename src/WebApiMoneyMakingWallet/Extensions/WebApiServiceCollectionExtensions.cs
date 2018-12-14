@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 #endregion
 
 namespace IDMONEY.IO
@@ -29,10 +30,11 @@ namespace IDMONEY.IO
             builder.AddJsonFormatters();
             builder.AddJsonOptions(opt =>
             {
-               opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 opt.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
                 opt.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
                 opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                opt.SerializerSettings.Converters.Add(new StringEnumConverter());
             });
 
             

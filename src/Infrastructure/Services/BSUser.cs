@@ -1,4 +1,4 @@
-﻿using IDMONEY.IO.DataAccess;
+﻿using IDMONEY.IO.Databases;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Users;
@@ -23,12 +23,12 @@ namespace IDMONEY.IO.Services
                 
         }
 
-        public CreateUserResponse CreateUser(CreateUserRequest req)
+        public async Task<CreateUserResponse> CreateUser(CreateUserRequest req)
         {
             CreateUserResponse res = new CreateUserResponse();
             try
             {
-                using (DAUser daUser = new DAUser())
+                using (UserDatabase daUser = new UserDatabase())
                 {
                     User user = daUser.GetUser(req.Email);
 
@@ -46,9 +46,10 @@ namespace IDMONEY.IO.Services
                             //Privatekey = privateKey
                         };
 
-                        user.AvailableBalance = 0;
-                        user.BlockedBalance = 0;
-                        user.Id = daUser.InsertUser(user);
+                        //TODO: CHECK IF ACCOUNT MUST BE ASSIGNED
+                        //user.AvailableBalance = 0;
+                        //user.BlockedBalance = 0;
+                        user.Id = await daUser.InsertUser(user);
 
                         res.User = user;
                         //res.Token = BuildToken(user);
@@ -80,9 +81,9 @@ namespace IDMONEY.IO.Services
         public UserResponse GetUser(Request req)
         {
             UserResponse res = new UserResponse();
-            using (DAUser daUser = new DAUser())
+            using (UserDatabase daUser = new UserDatabase())
             {
-                res.User = daUser.GetUser(User.Id);
+                res.User = daUser.GetUserAsync(User.Id);
             }
             res.IsSuccessful = true;
             return res;
@@ -95,9 +96,9 @@ namespace IDMONEY.IO.Services
             {
                 User user;
 
-                using (DAUser daUser = new DAUser())
+                using (UserDatabase daUser = new UserDatabase())
                 {
-                    user = daUser.LoginUser(req.Email, $"{req.Email}:{req.Password}".GenerateSHA512());
+                    user = daUser.LoginUserAsync(req.Email, $"{req.Email}:{req.Password}".GenerateSHA512());
       
                 }
 

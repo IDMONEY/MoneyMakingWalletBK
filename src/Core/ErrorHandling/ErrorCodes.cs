@@ -14,6 +14,7 @@ namespace IDMONEY.IO
         NotAuthorized = 3,
         EmailAlreadyRegistred = 4,
         InvalidAmount = 5,
-        InsufficientFunds = 6
+        InsufficientFunds = 6,
+        NicknameAlreadyRegistred = 7
     }
 }

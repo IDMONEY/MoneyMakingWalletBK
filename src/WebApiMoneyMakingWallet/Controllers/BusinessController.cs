@@ -34,32 +34,42 @@ namespace IDMONEY.IO.Controllers
         #region Methods
 
         [HttpPost, Authorize]
-        public Response CreateBusiness([FromBody]CreateBusinessRequest req)
+        public async Task<Response> CreateBusiness([FromBody]CreateBusinessRequest req)
         {
-            return this.businessService.Create(req);
+            return await this.businessService.CreateAsync(req);
         }
 
         [Route("{name:alpha}")]
         [HttpGet, Authorize]
-        public Response SearchBusiness(string name)
+        public async Task<Response> SearchBusiness(string name)
         {
             Ensure.IsNotNullOrEmpty(name);
-            return this.businessService.FindByName(name);
+
+            return await this.businessService.FindByNameAsync(name);
         }
 
 
-        [Route("{id:int}")]
+        [Route("{id:long}")]
         [HttpGet, Authorize]
-        public Response SearchBusiness(int id)
+        public async Task<Response> SearchBusiness(long id)
         {
             Ensure.IsNotNegativeOrZero(id);
-            return this.businessService.Get(id);
+
+            return await this.businessService.GetAsync(id);
         }
 
         [HttpGet, Authorize]
-        public Response Get()
+        public async Task<Response> Get()
         {
-            return this.businessService.GetAll();
+            return  await this.businessService.GetAllAsync();
+        }
+
+
+        [HttpGet, Authorize]
+        [Route("user")]
+        public async Task<Response> GetByUser()
+        {
+            return await this.businessService.GetByUserAsync(HttpContext.User);
         }
         #endregion
     }

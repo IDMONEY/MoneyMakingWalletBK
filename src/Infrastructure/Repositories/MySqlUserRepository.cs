@@ -1,5 +1,6 @@
 ﻿#region Libraries
-using IDMONEY.IO.DataAccess;
+using System.Threading.Tasks;
+using IDMONEY.IO.Databases;
 using IDMONEY.IO.Users; 
 #endregion
 
@@ -8,35 +9,43 @@ namespace IDMONEY.IO.Infrastructure
     public class MySqlUserRepository : IUserRepository
     {
         //TODO: How to inject the database
-        public long Add(User user)
+        public async Task<long> AddAsync(User user)
         {
-            using (var database = new DAUser())
+            using (var database = new UserDatabase())
             {
-                return database.InsertUser(user);
+                return await database.InsertUserAsync(user);
             }
         }
 
-        public User GetByCredentials(string email, string password)
+        public async Task<User> GetByCredentialsAsync(string email, string password)
         {
-            using (var database = new DAUser())
+            using (var database = new UserDatabase())
             {
-                return database.LoginUser(email, password);
+                return await database.LoginUserAsync(email, password);
             }
         }
 
-        public User GetByEmail(string email)
+        public async Task<User> GetByEmailAsync(string email)
         {
-            using (var database = new DAUser())
+            using (var database = new UserDatabase())
             {
-                return database.GetUser(email);
+                return await database.GetUserAsync(email);
             }
         }
 
-        public User GetById(long id)
+        public async Task<User> GetByIdAsync(long id)
         {
-            using (var database = new DAUser())
+            using (var database = new UserDatabase())
             {
-                return database.GetUser(id);
+                return await database.GetUserAsync(id);
+            }
+        }
+
+        public async Task<User> GetByNicknameAsync(string nickname)
+        {
+            using (var database = new UserDatabase())
+            {
+                return await database.GetByNicknameAsync(nickname);
             }
         }
     }

@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\BSBusiness.cs" />
     <Compile Remove="Services\BSTransaction.cs" />
+    <Compile Remove="Services\BSUser.cs" />
   </ItemGroup>
 
   <ItemGroup>

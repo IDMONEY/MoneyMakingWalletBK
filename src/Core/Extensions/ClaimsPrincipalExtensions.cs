@@ -1,12 +1,11 @@
 ﻿#region Libraries
-using System;
+using IDMONEY.IO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using IDMONEY.IO.Exceptions;
 #endregion
 
-namespace IDMONEY.IO.Security
+namespace System.Security.Claims
 {
     public static class ClaimsPrincipalExtensions
     {

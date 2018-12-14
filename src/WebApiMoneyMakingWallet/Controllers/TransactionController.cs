@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using IDMONEY.IO.Responses;
 using IDMONEY.IO.Requests;
 using IDMONEY.IO.Transactions;
+using System.Security.Claims;
 
 #endregion
 
@@ -33,18 +34,34 @@ namespace IDMONEY.IO.Controllers
 
         #region Methods
         [HttpPost, Authorize]
-        public Response InsertTransaction([FromBody]InsertTransactionRequest request)
+        public async Task<Response> InsertTransaction([FromBody]InsertTransactionRequest request)
         {
-            request.Transaction.UserId = UserId;
-            return this.transactionService.Add(request);
+
+            return await this.transactionService.AddAsync(request, HttpContext.User);
+        }
+
+        [Route("{id:long}")]
+        [HttpGet, Authorize]
+        public async Task<Response> SearchTransaction(long id)
+        {
+            Ensure.IsNotNegativeOrZero(id);
+
+            return await this.transactionService.GetAsync(HttpContext.User, id);
         }
 
         [HttpGet, Authorize]
-        public SearchTransactionResponse SearchTransactionByUser()
+        public async Task<SearchTransactionResponse> SearchTransactionByUser()
         {
-            return this.transactionService.GetUserTransactions(HttpContext.User);
+            return await this.transactionService.GetUserTransactionsAsync(HttpContext.User);
         }
 
+        [HttpGet, Authorize]
+        [Route("personal")]
+        public async Task<SearchTransactionResponse> SearchTransactionByUserAccount()
+        {
+            return await this.transactionService.GetAccountTransactionsAsync(HttpContext.User);
+        }
+        
         //TODO: FindByStatus
         #endregion
     }
